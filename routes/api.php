@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CitasMedicasController;
+use App\Http\Controllers\ConsultoriosController;
 use App\Http\Controllers\DoctoresController;
 use App\Http\Controllers\EspecialidadesController;
 use App\Http\Controllers\PacientesController;
@@ -51,3 +52,9 @@ Route::get("/citasPorPaciente/{pacienteId}", [CitasMedicasController::class, 'ci
 Route::get("/citasPorDoctor/{doctorId}", [CitasMedicasController::class, 'citasPorDoctor']);
 Route::get("/citasCompletadas", [CitasMedicasController::class, 'citasCompletadas']);
 
+// Consultorios Routes
+Route::get   ('/consultorios',                [ConsultoriosController::class, 'index']);
+Route::post  ('/consultorios',                [ConsultoriosController::class, 'store']);
+Route::get   ('/consultorios/{consultorio}',  [ConsultoriosController::class, 'show']);
+Route::put   ('/consultorios/{consultorio}',  [ConsultoriosController::class, 'update']);
+Route::delete('/consultorios/{consultorio}',  [ConsultoriosController::class, 'destroy']);
