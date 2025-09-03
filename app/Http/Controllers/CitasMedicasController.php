@@ -18,8 +18,9 @@ use Illuminate\Http\Request;
  *     @OA\Property(property="estado", type="string", enum={"programada","completada","cancelada"}),
  *     @OA\Property(property="novedad", type="string", nullable=true)
  * )
+ *
+ * @OA\SecurityRequirement({"bearerAuth":{}})
  */
-
 class CitasMedicasController extends Controller
 {
 

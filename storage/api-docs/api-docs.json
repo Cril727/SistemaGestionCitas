@@ -15,6 +15,77 @@
         }
     ],
     "paths": {
+        "/api/addUser": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Crear usuario",
+                "operationId": "7fcdd8801a80ed7884c4ccd69b781dea",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AuthRegisterRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Usuario creado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AuthRegisterResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Errores de validación"
+                    }
+                }
+            }
+        },
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Login y obtención de token JWT",
+                "operationId": "a3b306d14572d1f4bd6c064b3233e7b8",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AuthLoginRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login exitoso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AuthLoginResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Credenciales inválidas"
+                    },
+                    "422": {
+                        "description": "Errores de validación"
+                    }
+                }
+            }
+        },
         "/api/listarCitasMedicas": {
             "get": {
                 "tags": [
@@ -656,10 +727,679 @@
                     }
                 }
             }
+        },
+        "/api/listarEspecialidades": {
+            "get": {
+                "tags": [
+                    "Especialidades"
+                ],
+                "summary": "Listar especialidades",
+                "operationId": "de0eee5eb351ebfa54176489e51e0697",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Especialidad"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Prohibido (rol requerido)"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/AgregarEspecialidad": {
+            "post": {
+                "tags": [
+                    "Especialidades"
+                ],
+                "summary": "Crear especialidad",
+                "operationId": "be39c2ee96cbcc58136e0041fba7f9d4",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nombre"
+                                ],
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string",
+                                        "example": "Dermatología"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Creado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Especialidad"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Errores de validación"
+                    },
+                    "403": {
+                        "description": "Prohibido (rol requerido)"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/especialidade/{id}": {
+            "get": {
+                "tags": [
+                    "Especialidades"
+                ],
+                "summary": "Obtener especialidad por ID",
+                "operationId": "bb0a509d08dc21c1b9de315052192350",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Especialidad"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No encontrado"
+                    },
+                    "403": {
+                        "description": "Prohibido (rol requerido)"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/AcualizarEspecialidad/{id}": {
+            "put": {
+                "tags": [
+                    "Especialidades"
+                ],
+                "summary": "Actualizar especialidad",
+                "operationId": "247f790574d74f1a4e9fb454177b1532",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string",
+                                        "example": "Neumología"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Actualizado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Especialidad"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No encontrado"
+                    },
+                    "422": {
+                        "description": "Errores de validación"
+                    },
+                    "403": {
+                        "description": "Prohibido (rol requerido)"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/DeliminarEspecialidad/{id}": {
+            "delete": {
+                "tags": [
+                    "Especialidades"
+                ],
+                "summary": "Eliminar especialidad",
+                "operationId": "76487cc13b9d9028407fd48309f3203c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Eliminada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Especialidad eliminada con éxito"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No encontrado"
+                    },
+                    "403": {
+                        "description": "Prohibido (rol requerido)"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/listarPacientes": {
+            "get": {
+                "tags": [
+                    "Pacientes"
+                ],
+                "summary": "Listar pacientes",
+                "operationId": "651f00a5a749582544f14bb006822fc6",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Paciente"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Prohibido (rol requerido)"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/AgregarPaciente": {
+            "post": {
+                "tags": [
+                    "Pacientes"
+                ],
+                "summary": "Crear paciente",
+                "operationId": "58215dc33363d1788812e52f784eb520",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "documento",
+                                    "nombre",
+                                    "apellido",
+                                    "email"
+                                ],
+                                "properties": {
+                                    "documento": {
+                                        "type": "string",
+                                        "example": "1012345678"
+                                    },
+                                    "nombre": {
+                                        "type": "string",
+                                        "example": "María"
+                                    },
+                                    "apellido": {
+                                        "type": "string",
+                                        "example": "Gómez"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "maria@example.com"
+                                    },
+                                    "telefono": {
+                                        "type": "string",
+                                        "example": "3001234567",
+                                        "nullable": true
+                                    },
+                                    "genero": {
+                                        "type": "string",
+                                        "enum": [
+                                            "M",
+                                            "F",
+                                            "O"
+                                        ],
+                                        "example": "F",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Creado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Paciente"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Errores de validación"
+                    },
+                    "403": {
+                        "description": "Prohibido (rol requerido)"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/paciente/{id}": {
+            "get": {
+                "tags": [
+                    "Pacientes"
+                ],
+                "summary": "Obtener paciente por ID",
+                "operationId": "b5b291bbb69a7e21bd2eadac0731736d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Paciente"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No encontrado"
+                    },
+                    "403": {
+                        "description": "Prohibido (rol requerido)"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/ActualizarPaciente/{id}": {
+            "put": {
+                "tags": [
+                    "Pacientes"
+                ],
+                "summary": "Actualizar paciente",
+                "operationId": "80a2ac8fc216e78eb0925ef9bcba786b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "documento": {
+                                        "type": "string",
+                                        "example": "1012345678"
+                                    },
+                                    "nombre": {
+                                        "type": "string",
+                                        "example": "María"
+                                    },
+                                    "apellido": {
+                                        "type": "string",
+                                        "example": "Gómez"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "maria@example.com"
+                                    },
+                                    "telefono": {
+                                        "type": "string",
+                                        "example": "3001234567",
+                                        "nullable": true
+                                    },
+                                    "genero": {
+                                        "type": "string",
+                                        "enum": [
+                                            "M",
+                                            "F",
+                                            "O"
+                                        ],
+                                        "example": "F",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Actualizado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Paciente"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No encontrado"
+                    },
+                    "422": {
+                        "description": "Errores de validación"
+                    },
+                    "403": {
+                        "description": "Prohibido (rol requerido)"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/EliminarPaciente/{id}": {
+            "delete": {
+                "tags": [
+                    "Pacientes"
+                ],
+                "summary": "Eliminar paciente",
+                "operationId": "836b9fcd2361022c9febcad091a3c7b6",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Eliminado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Paciente eliminado correctamente"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No encontrado"
+                    },
+                    "403": {
+                        "description": "Prohibido (rol requerido)"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/pacientesMasculinos": {
+            "get": {
+                "tags": [
+                    "Pacientes"
+                ],
+                "summary": "Listar pacientes masculinos",
+                "operationId": "eaad92dcccb3a19fd2e9570a75480473",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Paciente"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Prohibido (rol requerido)"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
         }
     },
     "components": {
         "schemas": {
+            "AuthRegisterRequest": {
+                "required": [
+                    "name",
+                    "email",
+                    "password",
+                    "password_confirmation",
+                    "rol"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "jx"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "julian@dd.d"
+                    },
+                    "password": {
+                        "type": "string",
+                        "example": "12345"
+                    },
+                    "password_confirmation": {
+                        "type": "string",
+                        "example": "12345"
+                    },
+                    "rol": {
+                        "type": "string",
+                        "example": "admin"
+                    }
+                },
+                "type": "object"
+            },
+            "AuthRegisterResponse": {
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Usuario agregado correctamente"
+                    },
+                    "user": {
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "example": 10
+                            },
+                            "name": {
+                                "type": "string",
+                                "example": "Juan Pérez"
+                            },
+                            "email": {
+                                "type": "string",
+                                "example": "juan@example.com"
+                            },
+                            "rol": {
+                                "type": "string",
+                                "example": "admin"
+                            },
+                            "created_at": {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            "updated_at": {
+                                "type": "string",
+                                "format": "date-time"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "AuthLoginRequest": {
+                "required": [
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "juan@example.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "example": "secret123"
+                    }
+                },
+                "type": "object"
+            },
+            "AuthLoginResponse": {
+                "properties": {
+                    "Success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Bienvenido"
+                    },
+                    "Token": {
+                        "type": "string",
+                        "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+                    }
+                },
+                "type": "object"
+            },
             "CitaMedica": {
                 "title": "Cita Médica",
                 "properties": {
@@ -744,6 +1484,67 @@
                     }
                 },
                 "type": "object"
+            },
+            "Especialidad": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "nombre": {
+                        "type": "string",
+                        "example": "Cardiología"
+                    }
+                },
+                "type": "object"
+            },
+            "Paciente": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 12
+                    },
+                    "documento": {
+                        "type": "string",
+                        "example": "1012345678"
+                    },
+                    "nombre": {
+                        "type": "string",
+                        "example": "María"
+                    },
+                    "apellido": {
+                        "type": "string",
+                        "example": "Gómez"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "maria@example.com"
+                    },
+                    "telefono": {
+                        "type": "string",
+                        "example": "3001234567",
+                        "nullable": true
+                    },
+                    "genero": {
+                        "type": "string",
+                        "enum": [
+                            "M",
+                            "F",
+                            "O"
+                        ],
+                        "example": "F",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
             }
         }
     },
@@ -757,8 +1558,20 @@
             "description": "Citas médicas"
         },
         {
+            "name": "Auth",
+            "description": "Auth"
+        },
+        {
             "name": "Doctores",
             "description": "Doctores"
+        },
+        {
+            "name": "Especialidades",
+            "description": "Especialidades"
+        },
+        {
+            "name": "Pacientes",
+            "description": "Pacientes"
         }
     ]
 }

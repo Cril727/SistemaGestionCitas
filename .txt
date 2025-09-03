@@ -1,0 +1,5001 @@
+================================================
+FILE: README.md
+================================================
+<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+
+<p align="center">
+<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+</p>
+
+## About Laravel
+
+Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+
+- [Simple, fast routing engine](https://laravel.com/docs/routing).
+- [Powerful dependency injection container](https://laravel.com/docs/container).
+- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
+- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
+- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
+- [Robust background job processing](https://laravel.com/docs/queues).
+- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+
+Laravel is accessible, powerful, and provides tools required for large, robust applications.
+
+## Learning Laravel
+
+Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+
+You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+
+If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+
+## Laravel Sponsors
+
+We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+
+### Premium Partners
+
+- **[Vehikl](https://vehikl.com)**
+- **[Tighten Co.](https://tighten.co)**
+- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
+- **[64 Robots](https://64robots.com)**
+- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
+- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
+- **[Redberry](https://redberry.international/laravel-development)**
+- **[Active Logic](https://activelogic.com)**
+
+## Contributing
+
+Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+
+## Code of Conduct
+
+In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+
+## Security Vulnerabilities
+
+If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+
+## License
+
+The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+
+
+================================================
+FILE: artisan
+================================================
+#!/usr/bin/env php
+<?php
+
+use Illuminate\Foundation\Application;
+use Symfony\Component\Console\Input\ArgvInput;
+
+define('LARAVEL_START', microtime(true));
+
+// Register the Composer autoloader...
+require __DIR__.'/vendor/autoload.php';
+
+// Bootstrap Laravel and handle the command...
+/** @var Application $app */
+$app = require_once __DIR__.'/bootstrap/app.php';
+
+$status = $app->handleCommand(new ArgvInput);
+
+exit($status);
+
+
+
+================================================
+FILE: composer.json
+================================================
+{
+    "$schema": "https://getcomposer.org/schema.json",
+    "name": "laravel/laravel",
+    "type": "project",
+    "description": "The skeleton application for the Laravel framework.",
+    "keywords": ["laravel", "framework"],
+    "license": "MIT",
+    "require": {
+        "php": "^8.2",
+        "darkaonline/l5-swagger": "9.0.1",
+        "laravel/framework": "^12.0",
+        "laravel/sanctum": "^4.0",
+        "laravel/tinker": "^2.10.1",
+        "tymon/jwt-auth": "^2.2"
+    },
+    "require-dev": {
+        "fakerphp/faker": "^1.23",
+        "laravel/pail": "^1.2.2",
+        "laravel/pint": "^1.13",
+        "laravel/sail": "^1.41",
+        "mockery/mockery": "^1.6",
+        "nunomaduro/collision": "^8.6",
+        "phpunit/phpunit": "^11.5.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "@php artisan config:clear",
+            "@php artisan clear-compiled",
+            "@php artisan package:discover --ansi"
+        ],
+        "post-update-cmd": [
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
+        ],
+        "post-root-package-install": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ],
+        "post-create-project-cmd": [
+            "@php artisan key:generate --ansi",
+            "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
+            "@php artisan migrate --graceful --ansi"
+        ],
+        "dev": [
+            "Composer\\Config::disableProcessTimeout",
+            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite"
+        ],
+        "test": [
+            "@php artisan config:clear --ansi",
+            "@php artisan test"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "dont-discover": []
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
+
+
+
+================================================
+FILE: package.json
+================================================
+{
+    "$schema": "https://json.schemastore.org/package.json",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "vite build",
+        "dev": "vite"
+    },
+    "devDependencies": {
+        "@tailwindcss/vite": "^4.0.0",
+        "axios": "^1.11.0",
+        "concurrently": "^9.0.1",
+        "laravel-vite-plugin": "^2.0.0",
+        "tailwindcss": "^4.0.0",
+        "vite": "^7.0.4"
+    }
+}
+
+
+
+================================================
+FILE: phpunit.xml
+================================================
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         colors="true"
+>
+    <testsuites>
+        <testsuite name="Unit">
+            <directory>tests/Unit</directory>
+        </testsuite>
+        <testsuite name="Feature">
+            <directory>tests/Feature</directory>
+        </testsuite>
+    </testsuites>
+    <source>
+        <include>
+            <directory>app</directory>
+        </include>
+    </source>
+    <php>
+        <env name="APP_ENV" value="testing"/>
+        <env name="APP_MAINTENANCE_DRIVER" value="file"/>
+        <env name="BCRYPT_ROUNDS" value="4"/>
+        <env name="CACHE_STORE" value="array"/>
+        <env name="DB_CONNECTION" value="sqlite"/>
+        <env name="DB_DATABASE" value=":memory:"/>
+        <env name="MAIL_MAILER" value="array"/>
+        <env name="QUEUE_CONNECTION" value="sync"/>
+        <env name="SESSION_DRIVER" value="array"/>
+        <env name="PULSE_ENABLED" value="false"/>
+        <env name="TELESCOPE_ENABLED" value="false"/>
+        <env name="NIGHTWATCH_ENABLED" value="false"/>
+    </php>
+</phpunit>
+
+
+
+================================================
+FILE: vite.config.js
+================================================
+import { defineConfig } from 'vite';
+import laravel from 'laravel-vite-plugin';
+import tailwindcss from '@tailwindcss/vite';
+
+export default defineConfig({
+    plugins: [
+        laravel({
+            input: ['resources/css/app.css', 'resources/js/app.js'],
+            refresh: true,
+        }),
+        tailwindcss(),
+    ],
+});
+
+
+
+================================================
+FILE: .editorconfig
+================================================
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_size = 4
+indent_style = space
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.md]
+trim_trailing_whitespace = false
+
+[*.{yml,yaml}]
+indent_size = 2
+
+[docker-compose.yml]
+indent_size = 4
+
+
+
+================================================
+FILE: .env.example
+================================================
+APP_NAME=Laravel
+APP_ENV=local
+APP_KEY=
+APP_DEBUG=true
+APP_URL=http://localhost
+
+APP_LOCALE=en
+APP_FALLBACK_LOCALE=en
+APP_FAKER_LOCALE=en_US
+
+APP_MAINTENANCE_DRIVER=file
+# APP_MAINTENANCE_STORE=database
+
+PHP_CLI_SERVER_WORKERS=4
+
+BCRYPT_ROUNDS=12
+
+LOG_CHANNEL=stack
+LOG_STACK=single
+LOG_DEPRECATIONS_CHANNEL=null
+LOG_LEVEL=debug
+
+DB_CONNECTION=sqlite
+# DB_HOST=127.0.0.1
+# DB_PORT=3306
+# DB_DATABASE=laravel
+# DB_USERNAME=root
+# DB_PASSWORD=
+
+SESSION_DRIVER=database
+SESSION_LIFETIME=120
+SESSION_ENCRYPT=false
+SESSION_PATH=/
+SESSION_DOMAIN=null
+
+BROADCAST_CONNECTION=log
+FILESYSTEM_DISK=local
+QUEUE_CONNECTION=database
+
+CACHE_STORE=database
+# CACHE_PREFIX=
+
+MEMCACHED_HOST=127.0.0.1
+
+REDIS_CLIENT=phpredis
+REDIS_HOST=127.0.0.1
+REDIS_PASSWORD=null
+REDIS_PORT=6379
+
+MAIL_MAILER=log
+MAIL_SCHEME=null
+MAIL_HOST=127.0.0.1
+MAIL_PORT=2525
+MAIL_USERNAME=null
+MAIL_PASSWORD=null
+MAIL_FROM_ADDRESS="hello@example.com"
+MAIL_FROM_NAME="${APP_NAME}"
+
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
+AWS_DEFAULT_REGION=us-east-1
+AWS_BUCKET=
+AWS_USE_PATH_STYLE_ENDPOINT=false
+
+VITE_APP_NAME="${APP_NAME}"
+
+
+
+================================================
+FILE: .txt
+================================================
+[Empty file]
+
+
+================================================
+FILE: app/Http/Controllers/AuthController.php
+================================================
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+use Tymon\JWTAuth\Facades\JWTAuth;
+
+class AuthController extends Controller
+{
+    //
+    public function crearUsuario(Request $request)
+    {
+        $validated = Validator::make($request->all(), [
+            'name' => 'required|string',
+            'email' => 'required|email',
+            'password' => 'required|string|min:4',
+            'rol' => 'required|string'
+        ]);
+
+        if ($validated->fails()) {
+            return response()->json(['errors' => $validated->errors()]);
+        }
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'rol' => $request->rol
+        ]);
+
+        return response()->json(['success' => true, 'message' => 'Usuario agregado correctamente', 'user' => $user]);
+    }
+
+    public function login(Request $request){
+        $validated = Validator::make($request->all(),[
+            'email' => 'required|email',
+            'password' => 'required|string|min:4'
+        ]);
+
+        if($validated->fails()){
+            return response()->json(['errors' => $validated->errors()]);
+        }
+
+        $credenciales = $request->only('email','password');
+        if(!$token = JWTAuth::attempt($credenciales)){
+            return response()->json([
+                'success' => false,
+                'message' => 'Credenciales Invalidas'
+            ]);
+        }
+
+        return response()->json(['Success' => true, 'message' => 'Bienvenido', 'Token' => $token],200);
+
+
+    }
+}
+
+
+
+================================================
+FILE: app/Http/Controllers/CitasMedicasController.php
+================================================
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\citas_medicas;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
+
+/**
+ * @OA\Schema(
+ *     schema="CitaMedica",
+ *     type="object",
+ *     title="Cita Médica",
+ *     @OA\Property(property="id", type="integer"),
+ *     @OA\Property(property="paciente_id", type="integer"),
+ *     @OA\Property(property="doctor_id", type="integer"),
+ *     @OA\Property(property="fecha_hora", type="string", format="date-time"),
+ *     @OA\Property(property="estado", type="string", enum={"programada","completada","cancelada"}),
+ *     @OA\Property(property="novedad", type="string", nullable=true)
+ * )
+ */
+
+class CitasMedicasController extends Controller
+{
+
+    /**
+     * @OA\Get(
+     *     path="/api/listarCitasMedicas",
+     *     summary="Listar todas las citas médicas",
+     *     tags={"Citas Médicas"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista de citas médicas",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/CitaMedica")
+     *         )
+     *     )
+     * )
+     */
+    public function index()
+    {
+        $citasMedicas = citas_medicas::all();
+        return response()->json($citasMedicas);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/AgregarCitaMedica",
+     *     summary="Crear una nueva cita médica",
+     *     tags={"Citas Médicas"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/CitaMedica")
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Cita médica creada",
+     *         @OA\JsonContent(ref="#/components/schemas/CitaMedica")
+     *     ),
+     *     @OA\Response(response=422, description="Errores de validación")
+     * )
+     */
+    public function store(Request $request)
+    {
+        $validated = Validator::make($request->all(), [
+            'paciente_id' => 'required|exists:pacientes,id',
+            'doctor_id' => 'required|exists:doctores,id',
+            'fecha_hora' => 'required|date',
+            'estado' => 'required|in:programada,completada,cancelada',
+            'novedad' => 'nullable|string|max:255'
+        ]);
+
+        if ($validated->fails()) {
+            return response()->json($validated->errors(), 422);
+        }
+
+        $citaMedica = citas_medicas::create($request->all());
+        return response()->json($citaMedica, 201);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/citaMedica/{id}",
+     *     summary="Obtener una cita médica por ID",
+     *     tags={"Citas Médicas"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Datos de la cita médica",
+     *         @OA\JsonContent(ref="#/components/schemas/CitaMedica")
+     *     ),
+     *     @OA\Response(response=404, description="Cita médica no encontrada")
+     * )
+     */
+    public function show($id)
+    {
+        $citaMedica = citas_medicas::find($id);
+        if (!$citaMedica) {
+            return response()->json(['message' => 'Cita médica no encontrada'], 404);
+        }
+        return response()->json($citaMedica);
+    }
+
+    /**
+     * @OA\Put(
+     *     path="/api/ActualizarCitaMedica/{id}",
+     *     summary="Actualizar una cita médica",
+     *     tags={"Citas Médicas"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/CitaMedica")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Cita médica actualizada",
+     *         @OA\JsonContent(ref="#/components/schemas/CitaMedica")
+     *     ),
+     *     @OA\Response(response=404, description="Cita médica no encontrada"),
+     *     @OA\Response(response=422, description="Errores de validación")
+     * )
+     */
+    public function update(Request $request, $id)
+    {
+        $citaMedica = citas_medicas::find($id);
+        if (!$citaMedica) {
+            return response()->json(['message' => 'Cita médica no encontrada'], 404);
+        }
+
+        $validated = Validator::make($request->all(), [
+            'paciente_id' => 'sometimes|required|exists:pacientes,id',
+            'doctor_id' => 'sometimes|required|exists:doctores,id',
+            'fecha_hora' => 'sometimes|required|date',
+            'estado' => 'sometimes|required|in:programada,completada,cancelada',
+            'novedad' => 'nullable|string|max:255'
+        ]);
+
+        if ($validated->fails()) {
+            return response()->json($validated->errors(), 422);
+        }
+
+        $citaMedica->update($request->all());
+        return response()->json($citaMedica);
+    }
+
+    /**
+     * @OA\Delete(
+     *     path="/api/EliminarCitaMedica/{id}",
+     *     summary="Eliminar una cita médica",
+     *     tags={"Citas Médicas"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(response=200, description="Cita médica eliminada con éxito"),
+     *     @OA\Response(response=404, description="Cita médica no encontrada")
+     * )
+     */
+    public function destroy($id)
+    {
+        $citaMedica = citas_medicas::find($id);
+        if (!$citaMedica) {
+            return response()->json(['message' => 'Cita médica no encontrada'], 404);
+        }
+
+        $citaMedica->delete();
+        return response()->json(['message' => 'Cita médica eliminada con éxito']);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/citasPorPaciente/{pacienteId}",
+     *     summary="Obtener citas por paciente",
+     *     tags={"Citas Médicas"},
+     *     @OA\Parameter(
+     *         name="pacienteId",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista de citas del paciente",
+     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/CitaMedica"))
+     *     ),
+     *     @OA\Response(response=404, description="No se encontraron citas médicas para este paciente")
+     * )
+     */
+    public function citasPorPaciente($pacienteId)
+    {
+        $citas = citas_medicas::where('paciente_id', $pacienteId)->get();
+        if ($citas->isEmpty()) {
+            return response()->json(['message' => 'No se encontraron citas médicas para este paciente'], 404);
+        }
+        return response()->json($citas);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/citasPorDoctor/{doctorId}",
+     *     summary="Obtener citas por doctor",
+     *     tags={"Citas Médicas"},
+     *     @OA\Parameter(
+     *         name="doctorId",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista de citas del doctor",
+     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/CitaMedica"))
+     *     ),
+     *     @OA\Response(response=404, description="No se encontraron citas médicas para este doctor")
+     * )
+     */
+    public function citasPorDoctor($doctorId)
+    {
+        $citas = citas_medicas::where('doctor_id', $doctorId)->get();
+        if ($citas->isEmpty()) {
+            return response()->json(['message' => 'No se encontraron citas médicas para este doctor'], 404);
+        }
+        return response()->json($citas);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/citasCompletadas",
+     *     summary="Obtener citas completadas",
+     *     tags={"Citas Médicas"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista de citas completadas",
+     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/CitaMedica"))
+     *     ),
+     *     @OA\Response(response=404, description="No se encontraron citas médicas completadas")
+     * )
+     */
+    public function citasCompletadas()
+    {
+        $citas = citas_medicas::where('estado', 'completada')->get();
+        if ($citas->isEmpty()) {
+            return response()->json(['message' => 'No se encontraron citas médicas completadas'], 404);
+        }
+        return response()->json($citas);
+    }
+}
+
+
+
+================================================
+FILE: app/Http/Controllers/ConsultoriosController.php
+================================================
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\consultorios;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
+/**
+ * @OA\Schema(
+ *     schema="Consultorio",
+ *     type="object",
+ *     title="Consultorio",
+ *     @OA\Property(property="id", type="integer"),
+ *     @OA\Property(property="nombre", type="string"),
+ *     @OA\Property(property="ubicacion", type="string", nullable=true),
+ *     @OA\Property(property="piso", type="integer")
+ * )
+ */
+
+
+class ConsultoriosController extends Controller
+{
+    /**
+     * @OA\Get(
+     *     path="/api/consultorios",
+     *     summary="Lista todos los consultorios",
+     *     tags={"Consultorios"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista de consultorios",
+     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Consultorio"))
+     *     )
+     * )
+     */
+    public function index()
+    {
+        $consultorios = consultorios::all();
+        return response()->json($consultorios);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/consultorios",
+     *     summary="Crear un nuevo consultorio",
+     *     tags={"Consultorios"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/Consultorio")
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Consultorio creado correctamente",
+     *         @OA\JsonContent(ref="#/components/schemas/Consultorio")
+     *     ),
+     *     @OA\Response(response=422, description="Errores de validación")
+     * )
+     */
+    public function store(Request $request)
+    {
+        $validate = Validator::make($request->all(), [
+            'nombre'    => 'required|string|max:100',
+            'ubicacion' => 'nullable|string|max:255',
+            'piso'      => 'required|integer|min:0|max:255',
+        ]);
+
+        if ($validate->fails()) {
+            return response()->json($validate->errors(), 422);
+        }
+
+        $consultorio = consultorios::create($request->all());
+        return response()->json($consultorio, 201);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/consultorios/{id}",
+     *     summary="Muestra un consultorio específico",
+     *     tags={"Consultorios"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID del consultorio",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Datos del consultorio",
+     *         @OA\JsonContent(ref="#/components/schemas/Consultorio")
+     *     ),
+     *     @OA\Response(response=404, description="Consultorio no encontrado")
+     * )
+     */
+    public function show(string $id)
+    {
+        $consultorio = consultorios::find($id);
+        if (!$consultorio) {
+            return response()->json(['message' => 'Consultorio no encontrado'], 404);
+        }
+        return response()->json($consultorio);
+    }
+
+    /**
+     * @OA\Put(
+     *     path="/api/consultorios/{id}",
+     *     summary="Actualizar un consultorio existente",
+     *     tags={"Consultorios"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID del consultorio",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/Consultorio")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Consultorio actualizado correctamente",
+     *         @OA\JsonContent(ref="#/components/schemas/Consultorio")
+     *     ),
+     *     @OA\Response(response=422, description="Errores de validación"),
+     *     @OA\Response(response=404, description="Consultorio no encontrado")
+     * )
+     */
+    public function update(Request $request, string $id)
+    {
+        $consultorio = consultorios::find($id);
+        if (!$consultorio) {
+            return response()->json(['message' => 'Consultorio no encontrado'], 404);
+        }
+
+        $validate = Validator::make($request->all(), [
+            'nombre'    => 'sometimes|required|string|max:100',
+            'ubicacion' => 'nullable|string|max:255',
+            'piso'      => 'sometimes|required|integer|min:0|max:255',
+        ]);
+
+        if ($validate->fails()) {
+            return response()->json($validate->errors(), 422);
+        }
+
+        $consultorio->update($request->all());
+        return response()->json($consultorio);
+    }
+
+    /**
+     * @OA\Delete(
+     *     path="/api/consultorios/{id}",
+     *     summary="Eliminar un consultorio",
+     *     tags={"Consultorios"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID del consultorio",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Consultorio eliminado con éxito",
+     *         @OA\JsonContent(@OA\Property(property="message", type="string"))
+     *     ),
+     *     @OA\Response(response=404, description="Consultorio no encontrado")
+     * )
+     */
+    public function destroy(string $id)
+    {
+        $consultorio = consultorios::find($id);
+        if (!$consultorio) {
+            return response()->json(['message' => 'Consultorio no encontrado'], 404);
+        }
+
+        $consultorio->delete();
+        return response()->json(['message' => 'Consultorio eliminado con éxito']);
+    }
+}
+
+
+
+================================================
+FILE: app/Http/Controllers/Controller.php
+================================================
+<?php
+
+namespace App\Http\Controllers;
+
+abstract class Controller
+{
+    //
+}
+
+
+
+================================================
+FILE: app/Http/Controllers/DoctoresController.php
+================================================
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Doctores;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use OpenApi\Annotations as OA;
+
+
+/**
+ * @OA\Schema(
+ *     schema="Doctor",
+ *     type="object",
+ *     @OA\Property(property="id", type="integer"),
+ *     @OA\Property(property="nombre", type="string"),
+ *     @OA\Property(property="apellido", type="string"),
+ *     @OA\Property(property="email", type="string"),
+ *     @OA\Property(property="telefono", type="string", nullable=true),
+ *     @OA\Property(property="genero", type="string", nullable=true),
+ *     @OA\Property(property="estado", type="string", enum={"activo","inactivo"}),
+ *     @OA\Property(property="especialidad_id", type="integer")
+ * )
+ */
+
+class DoctoresController extends Controller
+{
+    /**
+     * @OA\Get(
+     *     path="/api/listarDoctores",
+     *     summary="Lista todos los doctores",
+     *     tags={"Doctores"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista de doctores",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/Doctor")
+     *         )
+     *     )
+     * )
+     */
+    public function index()
+    {
+        $doctores = Doctores::all();
+        return response()->json($doctores);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/AgregarDoctor",
+     *     summary="Crea un nuevo doctor",
+     *     tags={"Doctores"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/Doctor")
+     *     ),
+     *     @OA\Response(response=201, description="Doctor creado"),
+     *     @OA\Response(response=422, description="Errores de validación")
+     * )
+     */
+    public function store(Request $request)
+    {
+        $validate = Validator::make($request->all(), [
+            'nombre' => 'required|string|max:100',
+            'apellido' => 'required|string|max:100',
+            'email' => 'required|email|max:150|unique:doctores',
+            'telefono' => 'nullable|string|max:15',
+            'genero' => 'nullable|in:M,F,O',
+            'estado' => 'required|in:activo,inactivo',
+            'especialidad_id' => 'required|exists:especialidades,id'
+        ]);
+
+        if ($validate->fails()) {
+            return response()->json($validate->errors(), 422);
+        }
+
+        $doctor = Doctores::create($request->all());
+        return response()->json($doctor, 201);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/doctor/{id}",
+     *     summary="Obtiene un doctor por ID",
+     *     tags={"Doctores"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(response=200, description="Doctor encontrado", @OA\JsonContent(ref="#/components/schemas/Doctor")),
+     *     @OA\Response(response=404, description="Doctor no encontrado")
+     * )
+     */
+    public function show(string $id)
+    {
+        $doctor = Doctores::find($id);
+        if (!$doctor) {
+            return response()->json(['message' => 'Doctor no encontrado'], 404);
+        }
+        return response()->json($doctor);
+    }
+
+    /**
+     * @OA\Put(
+     *     path="/api/ActualizarDoctor/{id}",
+     *     summary="Actualiza un doctor por ID",
+     *     tags={"Doctores"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/Doctor")
+     *     ),
+     *     @OA\Response(response=200, description="Doctor actualizado"),
+     *     @OA\Response(response=404, description="Doctor no encontrado"),
+     *     @OA\Response(response=422, description="Errores de validación")
+     * )
+     */
+    public function update(Request $request, string $id)
+    {
+        $doctor = Doctores::find($id);
+        if (!$doctor) {
+            return response()->json(['message' => 'Doctor no encontrado'], 404);
+        }
+
+        $validate = Validator::make($request->all(), [
+            'nombre' => 'sometimes|required|string|max:100',
+            'apellido' => 'sometimes|required|string|max:100',
+            'email' => 'sometimes|required|email|max:150|unique:doctores,email,' . $id,
+            'telefono' => 'nullable|string|max:15',
+            'genero' => 'nullable|in:M,F,O',
+            'estado' => 'sometimes|required|in:activo,inactivo',
+            'especialidad_id' => 'sometimes|required|exists:especialidades,id'
+        ]);
+
+        if ($validate->fails()) {
+            return response()->json($validate->errors(), 422);
+        }
+
+        $doctor->update($request->all());
+        return response()->json($doctor);
+    }
+
+    /**
+     * @OA\Delete(
+     *     path="/api/EliminarDoctor/{id}",
+     *     summary="Elimina un doctor por ID",
+     *     tags={"Doctores"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(response=200, description="Doctor eliminado"),
+     *     @OA\Response(response=404, description="Doctor no encontrado")
+     * )
+     */
+    public function destroy(string $id)
+    {
+        $doctor = Doctores::find($id);
+        if (!$doctor) {
+            return response()->json(['message' => 'Doctor no encontrado'], 404);
+        }
+
+        $doctor->delete();
+        return response()->json(['message' => 'Doctor eliminado correctamente']);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/doctoresActivos",
+     *     summary="Lista todos los doctores activos",
+     *     tags={"Doctores"},
+     *     @OA\Response(response=200, description="Lista de doctores activos",
+     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Doctor"))
+     *     )
+     * )
+     */
+    public function doctoresActivos()
+    {
+        $doctores = Doctores::where('estado', 'activo')->get();
+        return response()->json($doctores);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/doctoresFemeninos",
+     *     summary="Lista todos los doctores femeninos",
+     *     tags={"Doctores"},
+     *     @OA\Response(response=200, description="Lista de doctores femeninos",
+     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Doctor"))
+     *     )
+     * )
+     */
+    public function doctoresFemeninos()
+    {
+        $doctores = Doctores::where('genero', 'F')->get();
+        return response()->json($doctores);
+    }
+}
+
+
+================================================
+FILE: app/Http/Controllers/EspecialidadesController.php
+================================================
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Especialidades;
+use Illuminate\Http\Request;
+
+class EspecialidadesController extends Controller
+{
+    //
+    public function index()
+    {
+        $especialidades = Especialidades::all();
+        return response()->json($especialidades);
+    }
+
+    public function store(Request $request)
+    {
+        $validatedData = $request->validate([
+            'nombre' => 'required|string|max:100|unique:especialidades'
+        ]);
+
+        $especialidad = Especialidades::create($validatedData);
+        return response()->json($especialidad, 201);
+    }
+    
+    public function show(string $id)
+    {
+        $especialidad = Especialidades::find($id);
+        if (!$especialidad) {
+            return response()->json(['message' => 'Especialidad no encontrada'], 404);
+        }
+        return response()->json($especialidad);
+    }
+
+    public function update(Request $request, string $id)
+    {
+        $especialidad = Especialidades::find($id);
+        if (!$especialidad) {
+            return response()->json(['message' => 'Especialidad no encontrada'], 404);
+        }
+
+        $validatedData = $request->validate([
+            'nombre' => 'sometimes|required|string|max:100|unique:especialidades,nombre,' . $id
+        ]);
+
+        $especialidad->update($validatedData);
+        return response()->json($especialidad);
+    }
+
+    public function destroy(string $id)
+    {
+        $especialidad = Especialidades::find($id);
+        if (!$especialidad) {
+            return response()->json(['message' => 'Especialidad no encontrada'], 404);
+        }
+
+        $especialidad->delete();
+        return response()->json(['message' => 'Especialidad eliminada con éxito']);
+    }
+}
+
+
+
+================================================
+FILE: app/Http/Controllers/PacientesController.php
+================================================
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Pacientes;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+
+class PacientesController extends Controller
+{
+    //
+    public function index()
+    {
+        $pacientes = Pacientes::all();
+        return response()->json($pacientes);
+    }
+
+    public function store(Request $request)
+    {
+        $validatedData = Validator::make($request->all(), [
+            'documento' => 'required|string|max:20|unique:pacientes',
+            'nombre' => 'required|string|max:100',
+            'apellido' => 'required|string|max:100',
+            'email' => 'required|email|max:150|unique:pacientes',
+            'telefono' => 'nullable|string|max:15',
+            'genero' => 'nullable|in:M,F,O'
+        ]);
+
+        if ($validatedData->fails()) {
+            return response()->json($validatedData->errors(), 422);
+        }
+
+        $paciente = Pacientes::create($request->all());
+        return response()->json($paciente, 201);
+
+    }
+
+    public function show(string $id)
+    {
+        $paciente = Pacientes::find($id);
+        if (!$paciente) {   
+            return response()->json(['message' => 'Paciente no encontrado'], 404);
+        }
+        return response()->json($paciente);
+    }
+
+
+    public function update(Request $request, string $id)
+    {
+        $paciente = Pacientes::find($id);
+        if (!$paciente) {
+            return response()->json(['message' => 'Paciente no encontrado'], 404);
+        }
+
+        $validatedData = Validator::make($request->all(), [
+            'documento' => 'sometimes|required|string|max:20|unique:pacientes,documento,' . $id,
+            'nombre' => 'sometimes|required|string|max:100',
+            'apellido' => 'sometimes|required|string|max:100',
+            'email' => 'sometimes|required|email|max:150|unique:pacientes,email,' . $id,
+            'telefono' => 'nullable|string|max:15',
+            'genero' => 'nullable|in:M,F,O'
+        ]);
+
+        if ($validatedData->fails()) {
+            return response()->json($validatedData->errors(), 422);
+        }
+
+        $paciente->update($request->all());
+        return response()->json($paciente);
+    }
+
+
+    public function destroy(string $id)
+    {
+        $paciente = Pacientes::find($id);
+        if (!$paciente) {
+            return response()->json(['message' => 'Paciente no encontrado'], 404);
+        }
+
+        $paciente->delete();
+        return response()->json(['message' => 'Paciente eliminado correctamente']);
+    }
+
+    //pacientes masculinos
+    public function pacientesMasculinos(){
+        $pacientes = Pacientes::where('genero', 'M')->get();
+        return response()->json($pacientes);
+    }
+
+    
+}
+
+
+
+================================================
+FILE: app/Http/Middleware/rolMiddleware.php
+================================================
+<?php
+
+namespace App\Http\Middleware;
+
+use App\Models\User;
+use Closure;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Tymon\JWTAuth\Facades\JWTAuth;
+
+class rolMiddleware
+{
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     */
+    public function handle(Request $request, Closure $next, ...$rol): Response
+    {
+
+        try {
+            $user = JWTAuth::parseToken()->authenticate();
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'token invalido'],401);
+        }
+
+        if(!in_array($user->rol,$rol,true)){
+            return response()->json(['Error' => 'Error no tienes el permiso necesario'],403);
+        }
+
+        return $next($request);
+    }
+}
+
+
+
+================================================
+FILE: app/Models/citas_medicas.php
+================================================
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class citas_medicas extends Model
+{
+    //
+    protected $table = 'citas_medicas';
+    protected $fillable = [
+        'paciente_id',
+        'doctor_id',
+        'fecha_hora',
+        'estado',
+        'novedad'
+    ];
+
+}
+
+
+
+================================================
+FILE: app/Models/consultorios.php
+================================================
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class consultorios extends Model
+{
+    protected $table = 'consultorios';
+    protected $fillable = ['nombre', 'ubicacion', 'piso'];
+    protected $casts = ['piso' => 'integer'];
+}
+
+
+
+================================================
+FILE: app/Models/Doctores.php
+================================================
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Doctores extends Model
+{
+    //
+    protected $fillable = [
+        'nombre',
+        'apellido',
+        'email',
+        'telefono',
+        'genero',
+        'estado',
+        'especialidad_id'
+    ];
+}
+
+
+
+================================================
+FILE: app/Models/Especialidades.php
+================================================
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Especialidades extends Model
+{
+    //
+    protected $table = 'especialidades';
+    protected $fillable = ['nombre'];
+}
+
+
+
+================================================
+FILE: app/Models/Pacientes.php
+================================================
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Pacientes extends Model
+{
+    // Define the table associated with the model
+    protected $table = 'pacientes';
+
+    // Define the fillable attributes
+    protected $fillable = [
+        'documento',
+        'nombre',
+        'apellido',
+        'email',
+        'telefono',
+        'genero'
+    ];
+
+}
+
+
+
+================================================
+FILE: app/Models/User.php
+================================================
+<?php
+
+namespace App\Models;
+
+// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Tymon\JWTAuth\Contracts\JWTSubject;
+
+class User extends Authenticatable implements JWTSubject
+{
+    /** @use HasFactory<\Database\Factories\UserFactory> */
+    use HasFactory, Notifiable;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var list<string>    
+     */
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'rol',
+    ];
+
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
+
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var list<string>
+     */
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
+    }
+}
+
+
+
+================================================
+FILE: app/Providers/AppServiceProvider.php
+================================================
+<?php
+
+namespace App\Providers;
+
+use Illuminate\Support\ServiceProvider;
+
+class AppServiceProvider extends ServiceProvider
+{
+    /**
+     * Register any application services.
+     */
+    public function register(): void
+    {
+        //
+    }
+
+    /**
+     * Bootstrap any application services.
+     */
+    public function boot(): void
+    {
+        //
+    }
+}
+
+
+
+================================================
+FILE: app/Swagger/SwaggerDocumentation.php
+================================================
+<?php
+// app/Swagger/SwaggerDocumentation.php
+
+namespace App\Swagger;
+
+use OpenApi\Annotations as OA;
+
+/**
+ * @OA\Info(
+ *     version="1.0.0",
+ *     title="API de Gestión de Citas Médicas",
+ *     description="Documentación de la API",
+ *     @OA\Contact(email="contacto@ejemplo.com")
+ * )
+ *
+ * @OA\Server(
+ *     url="http://localhost:8000",
+ *     description="Servidor local"
+ * )
+ *
+ * @OA\Tag(name="Consultorios", description="Consultorios")
+ * @OA\Tag(name="Citas Médicas", description="Citas médicas")
+ */
+
+class SwaggerDocumentation
+{
+}
+
+
+
+
+
+================================================
+FILE: bootstrap/app.php
+================================================
+<?php
+
+use App\Http\Middleware\rolMiddleware;
+use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Configuration\Exceptions;
+use Illuminate\Foundation\Configuration\Middleware;
+use Tymon\JWTAuth\Http\Middleware\Authenticate;
+
+return Application::configure(basePath: dirname(__DIR__))
+    ->withRouting(
+        web: __DIR__.'/../routes/web.php',
+        api: __DIR__.'/../routes/api.php',
+        commands: __DIR__.'/../routes/console.php',
+        health: '/up',
+    )
+    ->withMiddleware(function (Middleware $middleware): void {
+        //
+        $middleware->alias([
+            'jwt.auth' => Authenticate::class,
+            'rol' => rolMiddleware::class
+        ]);
+    })
+    ->withExceptions(function (Exceptions $exceptions): void {
+        //
+    })->create();
+
+
+
+================================================
+FILE: bootstrap/providers.php
+================================================
+<?php
+
+return [
+    App\Providers\AppServiceProvider::class,
+];
+
+
+
+================================================
+FILE: config/app.php
+================================================
+<?php
+
+return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Application Name
+    |--------------------------------------------------------------------------
+    |
+    | This value is the name of your application, which will be used when the
+    | framework needs to place the application's name in a notification or
+    | other UI elements where an application name needs to be displayed.
+    |
+    */
+
+    'name' => env('APP_NAME', 'Laravel'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Application Environment
+    |--------------------------------------------------------------------------
+    |
+    | This value determines the "environment" your application is currently
+    | running in. This may determine how you prefer to configure various
+    | services the application utilizes. Set this in your ".env" file.
+    |
+    */
+
+    'env' => env('APP_ENV', 'production'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Application Debug Mode
+    |--------------------------------------------------------------------------
+    |
+    | When your application is in debug mode, detailed error messages with
+    | stack traces will be shown on every error that occurs within your
+    | application. If disabled, a simple generic error page is shown.
+    |
+    */
+
+    'debug' => (bool) env('APP_DEBUG', false),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Application URL
+    |--------------------------------------------------------------------------
+    |
+    | This URL is used by the console to properly generate URLs when using
+    | the Artisan command line tool. You should set this to the root of
+    | the application so that it's available within Artisan commands.
+    |
+    */
+
+    'url' => env('APP_URL', 'http://localhost'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Application Timezone
+    |--------------------------------------------------------------------------
+    |
+    | Here you may specify the default timezone for your application, which
+    | will be used by the PHP date and date-time functions. The timezone
+    | is set to "UTC" by default as it is suitable for most use cases.
+    |
+    */
+
+    'timezone' => 'UTC',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Application Locale Configuration
+    |--------------------------------------------------------------------------
+    |
+    | The application locale determines the default locale that will be used
+    | by Laravel's translation / localization methods. This option can be
+    | set to any locale for which you plan to have translation strings.
+    |
+    */
+
+    'locale' => env('APP_LOCALE', 'en'),
+
+    'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
+
+    'faker_locale' => env('APP_FAKER_LOCALE', 'en_US'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Encryption Key
+    |--------------------------------------------------------------------------
+    |
+    | This key is utilized by Laravel's encryption services and should be set
+    | to a random, 32 character string to ensure that all encrypted values
+    | are secure. You should do this prior to deploying the application.
+    |
+    */
+
+    'cipher' => 'AES-256-CBC',
+
+    'key' => env('APP_KEY'),
+
+    'previous_keys' => [
+        ...array_filter(
+            explode(',', (string) env('APP_PREVIOUS_KEYS', ''))
+        ),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Maintenance Mode Driver
+    |--------------------------------------------------------------------------
+    |
+    | These configuration options determine the driver used to determine and
+    | manage Laravel's "maintenance mode" status. The "cache" driver will
+    | allow maintenance mode to be controlled across multiple machines.
+    |
+    | Supported drivers: "file", "cache"
+    |
+    */
+
+    'maintenance' => [
+        'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
+        'store' => env('APP_MAINTENANCE_STORE', 'database'),
+    ],
+
+];
+
+
+
+================================================
+FILE: config/auth.php
+================================================
+<?php
+
+return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Authentication Defaults
+    |--------------------------------------------------------------------------
+    |
+    | This option defines the default authentication "guard" and password
+    | reset "broker" for your application. You may change these values
+    | as required, but they're a perfect start for most applications.
+    |
+    */
+
+    'defaults' => [
+        'guard' => env('AUTH_GUARD', 'web'),
+        'passwords' => env('AUTH_PASSWORD_BROKER', 'users'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Authentication Guards
+    |--------------------------------------------------------------------------
+    |
+    | Next, you may define every authentication guard for your application.
+    | Of course, a great default configuration has been defined for you
+    | which utilizes session storage plus the Eloquent user provider.
+    |
+    | All authentication guards have a user provider, which defines how the
+    | users are actually retrieved out of your database or other storage
+    | system used by the application. Typically, Eloquent is utilized.
+    |
+    | Supported: "session"
+    |
+    */
+
+    'guards' => [
+        'web' => [
+            'driver' => 'session',
+            'provider' => 'users',
+        ],
+        'api' => [
+            'driver' => 'jwt',
+            'provider' => 'users',
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | User Providers
+    |--------------------------------------------------------------------------
+    |
+    | All authentication guards have a user provider, which defines how the
+    | users are actually retrieved out of your database or other storage
+    | system used by the application. Typically, Eloquent is utilized.
+    |
+    | If you have multiple user tables or models you may configure multiple
+    | providers to represent the model / table. These providers may then
+    | be assigned to any extra authentication guards you have defined.
+    |
+    | Supported: "database", "eloquent"
+    |
+    */
+
+    'providers' => [
+        'users' => [
+            'driver' => 'eloquent',
+            'model' => env('AUTH_MODEL', App\Models\User::class),
+        ],
+
+        // 'users' => [
+        //     'driver' => 'database',
+        //     'table' => 'users',
+        // ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Resetting Passwords
+    |--------------------------------------------------------------------------
+    |
+    | These configuration options specify the behavior of Laravel's password
+    | reset functionality, including the table utilized for token storage
+    | and the user provider that is invoked to actually retrieve users.
+    |
+    | The expiry time is the number of minutes that each reset token will be
+    | considered valid. This security feature keeps tokens short-lived so
+    | they have less time to be guessed. You may change this as needed.
+    |
+    | The throttle setting is the number of seconds a user must wait before
+    | generating more password reset tokens. This prevents the user from
+    | quickly generating a very large amount of password reset tokens.
+    |
+    */
+
+    'passwords' => [
+        'users' => [
+            'provider' => 'users',
+            'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Password Confirmation Timeout
+    |--------------------------------------------------------------------------
+    |
+    | Here you may define the number of seconds before a password confirmation
+    | window expires and users are asked to re-enter their password via the
+    | confirmation screen. By default, the timeout lasts for three hours.
+    |
+    */
+
+    'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
+
+];
+
+
+
+================================================
+FILE: config/cache.php
+================================================
+<?php
+
+use Illuminate\Support\Str;
+
+return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Default Cache Store
+    |--------------------------------------------------------------------------
+    |
+    | This option controls the default cache store that will be used by the
+    | framework. This connection is utilized if another isn't explicitly
+    | specified when running a cache operation inside the application.
+    |
+    */
+
+    'default' => env('CACHE_STORE', 'database'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Cache Stores
+    |--------------------------------------------------------------------------
+    |
+    | Here you may define all of the cache "stores" for your application as
+    | well as their drivers. You may even define multiple stores for the
+    | same cache driver to group types of items stored in your caches.
+    |
+    | Supported drivers: "array", "database", "file", "memcached",
+    |                    "redis", "dynamodb", "octane", "null"
+    |
+    */
+
+    'stores' => [
+
+        'array' => [
+            'driver' => 'array',
+            'serialize' => false,
+        ],
+
+        'database' => [
+            'driver' => 'database',
+            'connection' => env('DB_CACHE_CONNECTION'),
+            'table' => env('DB_CACHE_TABLE', 'cache'),
+            'lock_connection' => env('DB_CACHE_LOCK_CONNECTION'),
+            'lock_table' => env('DB_CACHE_LOCK_TABLE'),
+        ],
+
+        'file' => [
+            'driver' => 'file',
+            'path' => storage_path('framework/cache/data'),
+            'lock_path' => storage_path('framework/cache/data'),
+        ],
+
+        'memcached' => [
+            'driver' => 'memcached',
+            'persistent_id' => env('MEMCACHED_PERSISTENT_ID'),
+            'sasl' => [
+                env('MEMCACHED_USERNAME'),
+                env('MEMCACHED_PASSWORD'),
+            ],
+            'options' => [
+                // Memcached::OPT_CONNECT_TIMEOUT => 2000,
+            ],
+            'servers' => [
+                [
+                    'host' => env('MEMCACHED_HOST', '127.0.0.1'),
+                    'port' => env('MEMCACHED_PORT', 11211),
+                    'weight' => 100,
+                ],
+            ],
+        ],
+
+        'redis' => [
+            'driver' => 'redis',
+            'connection' => env('REDIS_CACHE_CONNECTION', 'cache'),
+            'lock_connection' => env('REDIS_CACHE_LOCK_CONNECTION', 'default'),
+        ],
+
+        'dynamodb' => [
+            'driver' => 'dynamodb',
+            'key' => env('AWS_ACCESS_KEY_ID'),
+            'secret' => env('AWS_SECRET_ACCESS_KEY'),
+            'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
+            'table' => env('DYNAMODB_CACHE_TABLE', 'cache'),
+            'endpoint' => env('DYNAMODB_ENDPOINT'),
+        ],
+
+        'octane' => [
+            'driver' => 'octane',
+        ],
+
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Cache Key Prefix
+    |--------------------------------------------------------------------------
+    |
+    | When utilizing the APC, database, memcached, Redis, and DynamoDB cache
+    | stores, there might be other applications using the same cache. For
+    | that reason, you may prefix every cache key to avoid collisions.
+    |
+    */
+
+    'prefix' => env('CACHE_PREFIX', Str::slug((string) env('APP_NAME', 'laravel')).'-cache-'),
+
+];
+
+
+
+================================================
+FILE: config/database.php
+================================================
+<?php
+
+use Illuminate\Support\Str;
+
+return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Default Database Connection Name
+    |--------------------------------------------------------------------------
+    |
+    | Here you may specify which of the database connections below you wish
+    | to use as your default connection for database operations. This is
+    | the connection which will be utilized unless another connection
+    | is explicitly specified when you execute a query / statement.
+    |
+    */
+
+    'default' => env('DB_CONNECTION', 'sqlite'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Database Connections
+    |--------------------------------------------------------------------------
+    |
+    | Below are all of the database connections defined for your application.
+    | An example configuration is provided for each database system which
+    | is supported by Laravel. You're free to add / remove connections.
+    |
+    */
+
+    'connections' => [
+
+        'sqlite' => [
+            'driver' => 'sqlite',
+            'url' => env('DB_URL'),
+            'database' => env('DB_DATABASE', database_path('database.sqlite')),
+            'prefix' => '',
+            'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
+            'busy_timeout' => null,
+            'journal_mode' => null,
+            'synchronous' => null,
+        ],
+
+        'mysql' => [
+            'driver' => 'mysql',
+            'url' => env('DB_URL'),
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT', '3306'),
+            'database' => env('DB_DATABASE', 'laravel'),
+            'username' => env('DB_USERNAME', 'root'),
+            'password' => env('DB_PASSWORD', ''),
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset' => env('DB_CHARSET', 'utf8mb4'),
+            'collation' => env('DB_COLLATION', 'utf8mb4_unicode_ci'),
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
+
+        'mariadb' => [
+            'driver' => 'mariadb',
+            'url' => env('DB_URL'),
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT', '3306'),
+            'database' => env('DB_DATABASE', 'laravel'),
+            'username' => env('DB_USERNAME', 'root'),
+            'password' => env('DB_PASSWORD', ''),
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset' => env('DB_CHARSET', 'utf8mb4'),
+            'collation' => env('DB_COLLATION', 'utf8mb4_unicode_ci'),
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
+
+        'pgsql' => [
+            'driver' => 'pgsql',
+            'url' => env('DB_URL'),
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT', '5432'),
+            'database' => env('DB_DATABASE', 'laravel'),
+            'username' => env('DB_USERNAME', 'root'),
+            'password' => env('DB_PASSWORD', ''),
+            'charset' => env('DB_CHARSET', 'utf8'),
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'search_path' => 'public',
+            'sslmode' => 'prefer',
+        ],
+
+        'sqlsrv' => [
+            'driver' => 'sqlsrv',
+            'url' => env('DB_URL'),
+            'host' => env('DB_HOST', 'localhost'),
+            'port' => env('DB_PORT', '1433'),
+            'database' => env('DB_DATABASE', 'laravel'),
+            'username' => env('DB_USERNAME', 'root'),
+            'password' => env('DB_PASSWORD', ''),
+            'charset' => env('DB_CHARSET', 'utf8'),
+            'prefix' => '',
+            'prefix_indexes' => true,
+            // 'encrypt' => env('DB_ENCRYPT', 'yes'),
+            // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
+        ],
+
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Migration Repository Table
+    |--------------------------------------------------------------------------
+    |
+    | This table keeps track of all the migrations that have already run for
+    | your application. Using this information, we can determine which of
+    | the migrations on disk haven't actually been run on the database.
+    |
+    */
+
+    'migrations' => [
+        'table' => 'migrations',
+        'update_date_on_publish' => true,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Redis Databases
+    |--------------------------------------------------------------------------
+    |
+    | Redis is an open source, fast, and advanced key-value store that also
+    | provides a richer body of commands than a typical key-value system
+    | such as Memcached. You may define your connection settings here.
+    |
+    */
+
+    'redis' => [
+
+        'client' => env('REDIS_CLIENT', 'phpredis'),
+
+        'options' => [
+            'cluster' => env('REDIS_CLUSTER', 'redis'),
+            'prefix' => env('REDIS_PREFIX', Str::slug((string) env('APP_NAME', 'laravel')).'-database-'),
+            'persistent' => env('REDIS_PERSISTENT', false),
+        ],
+
+        'default' => [
+            'url' => env('REDIS_URL'),
+            'host' => env('REDIS_HOST', '127.0.0.1'),
+            'username' => env('REDIS_USERNAME'),
+            'password' => env('REDIS_PASSWORD'),
+            'port' => env('REDIS_PORT', '6379'),
+            'database' => env('REDIS_DB', '0'),
+        ],
+
+        'cache' => [
+            'url' => env('REDIS_URL'),
+            'host' => env('REDIS_HOST', '127.0.0.1'),
+            'username' => env('REDIS_USERNAME'),
+            'password' => env('REDIS_PASSWORD'),
+            'port' => env('REDIS_PORT', '6379'),
+            'database' => env('REDIS_CACHE_DB', '1'),
+        ],
+
+    ],
+
+];
+
+
+
+================================================
+FILE: config/filesystems.php
+================================================
+<?php
+
+return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Default Filesystem Disk
+    |--------------------------------------------------------------------------
+    |
+    | Here you may specify the default filesystem disk that should be used
+    | by the framework. The "local" disk, as well as a variety of cloud
+    | based disks are available to your application for file storage.
+    |
+    */
+
+    'default' => env('FILESYSTEM_DISK', 'local'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Filesystem Disks
+    |--------------------------------------------------------------------------
+    |
+    | Below you may configure as many filesystem disks as necessary, and you
+    | may even configure multiple disks for the same driver. Examples for
+    | most supported storage drivers are configured here for reference.
+    |
+    | Supported drivers: "local", "ftp", "sftp", "s3"
+    |
+    */
+
+    'disks' => [
+
+        'local' => [
+            'driver' => 'local',
+            'root' => storage_path('app/private'),
+            'serve' => true,
+            'throw' => false,
+            'report' => false,
+        ],
+
+        'public' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public'),
+            'url' => env('APP_URL').'/storage',
+            'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
+        ],
+
+        's3' => [
+            'driver' => 's3',
+            'key' => env('AWS_ACCESS_KEY_ID'),
+            'secret' => env('AWS_SECRET_ACCESS_KEY'),
+            'region' => env('AWS_DEFAULT_REGION'),
+            'bucket' => env('AWS_BUCKET'),
+            'url' => env('AWS_URL'),
+            'endpoint' => env('AWS_ENDPOINT'),
+            'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
+            'throw' => false,
+            'report' => false,
+        ],
+
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Symbolic Links
+    |--------------------------------------------------------------------------
+    |
+    | Here you may configure the symbolic links that will be created when the
+    | `storage:link` Artisan command is executed. The array keys should be
+    | the locations of the links and the values should be their targets.
+    |
+    */
+
+    'links' => [
+        public_path('storage') => storage_path('app/public'),
+    ],
+
+];
+
+
+
+================================================
+FILE: config/jwt.php
+================================================
+<?php
+
+/*
+ * This file is part of jwt-auth.
+ *
+ * (c) Sean Tymon <tymon148@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | JWT Authentication Secret
+    |--------------------------------------------------------------------------
+    |
+    | Don't forget to set this in your .env file, as it will be used to sign
+    | your tokens. A helper command is provided for this:
+    | `php artisan jwt:secret`
+    |
+    | Note: This will be used for Symmetric algorithms only (HMAC),
+    | since RSA and ECDSA use a private/public key combo (See below).
+    |
+    */
+
+    'secret' => env('JWT_SECRET'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | JWT Authentication Keys
+    |--------------------------------------------------------------------------
+    |
+    | The algorithm you are using, will determine whether your tokens are
+    | signed with a random string (defined in `JWT_SECRET`) or using the
+    | following public & private keys.
+    |
+    | Symmetric Algorithms:
+    | HS256, HS384 & HS512 will use `JWT_SECRET`.
+    |
+    | Asymmetric Algorithms:
+    | RS256, RS384 & RS512 / ES256, ES384 & ES512 will use the keys below.
+    |
+    */
+
+    'keys' => [
+
+        /*
+        |--------------------------------------------------------------------------
+        | Public Key
+        |--------------------------------------------------------------------------
+        |
+        | A path or resource to your public key.
+        |
+        | E.g. 'file://path/to/public/key'
+        |
+        */
+
+        'public' => env('JWT_PUBLIC_KEY'),
+
+        /*
+        |--------------------------------------------------------------------------
+        | Private Key
+        |--------------------------------------------------------------------------
+        |
+        | A path or resource to your private key.
+        |
+        | E.g. 'file://path/to/private/key'
+        |
+        */
+
+        'private' => env('JWT_PRIVATE_KEY'),
+
+        /*
+        |--------------------------------------------------------------------------
+        | Passphrase
+        |--------------------------------------------------------------------------
+        |
+        | The passphrase for your private key. Can be null if none set.
+        |
+        */
+
+        'passphrase' => env('JWT_PASSPHRASE'),
+
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | JWT time to live
+    |--------------------------------------------------------------------------
+    |
+    | Specify the length of time (in minutes) that the token will be valid for.
+    | Defaults to 1 hour.
+    |
+    | You can also set this to null, to yield a never expiring token.
+    | Some people may want this behaviour for e.g. a mobile app.
+    | This is not particularly recommended, so make sure you have appropriate
+    | systems in place to revoke the token if necessary.
+    | Notice: If you set this to null you should remove 'exp' element from 'required_claims' list.
+    |
+    */
+
+    'ttl' => env('JWT_TTL', 60),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Refresh time to live
+    |--------------------------------------------------------------------------
+    |
+    | Specify the length of time (in minutes) that the token can be refreshed
+    | within. I.E. The user can refresh their token within a 2 week window of
+    | the original token being created until they must re-authenticate.
+    | Defaults to 2 weeks.
+    |
+    | You can also set this to null, to yield an infinite refresh time.
+    | Some may want this instead of never expiring tokens for e.g. a mobile app.
+    | This is not particularly recommended, so make sure you have appropriate
+    | systems in place to revoke the token if necessary.
+    |
+    */
+
+    'refresh_ttl' => env('JWT_REFRESH_TTL', 20160),
+
+    /*
+    |--------------------------------------------------------------------------
+    | JWT hashing algorithm
+    |--------------------------------------------------------------------------
+    |
+    | Specify the hashing algorithm that will be used to sign the token.
+    |
+    */
+
+    'algo' => env('JWT_ALGO', Tymon\JWTAuth\Providers\JWT\Provider::ALGO_HS256),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Required Claims
+    |--------------------------------------------------------------------------
+    |
+    | Specify the required claims that must exist in any token.
+    | A TokenInvalidException will be thrown if any of these claims are not
+    | present in the payload.
+    |
+    */
+
+    'required_claims' => [
+        'iss',
+        'iat',
+        'exp',
+        'nbf',
+        'sub',
+        'jti',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Persistent Claims
+    |--------------------------------------------------------------------------
+    |
+    | Specify the claim keys to be persisted when refreshing a token.
+    | `sub` and `iat` will automatically be persisted, in
+    | addition to the these claims.
+    |
+    | Note: If a claim does not exist then it will be ignored.
+    |
+    */
+
+    'persistent_claims' => [
+        // 'foo',
+        // 'bar',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Lock Subject
+    |--------------------------------------------------------------------------
+    |
+    | This will determine whether a `prv` claim is automatically added to
+    | the token. The purpose of this is to ensure that if you have multiple
+    | authentication models e.g. `App\User` & `App\OtherPerson`, then we
+    | should prevent one authentication request from impersonating another,
+    | if 2 tokens happen to have the same id across the 2 different models.
+    |
+    | Under specific circumstances, you may want to disable this behaviour
+    | e.g. if you only have one authentication model, then you would save
+    | a little on token size.
+    |
+    */
+
+    'lock_subject' => true,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Leeway
+    |--------------------------------------------------------------------------
+    |
+    | This property gives the jwt timestamp claims some "leeway".
+    | Meaning that if you have any unavoidable slight clock skew on
+    | any of your servers then this will afford you some level of cushioning.
+    |
+    | This applies to the claims `iat`, `nbf` and `exp`.
+    |
+    | Specify in seconds - only if you know you need it.
+    |
+    */
+
+    'leeway' => env('JWT_LEEWAY', 0),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Blacklist Enabled
+    |--------------------------------------------------------------------------
+    |
+    | In order to invalidate tokens, you must have the blacklist enabled.
+    | If you do not want or need this functionality, then set this to false.
+    |
+    */
+
+    'blacklist_enabled' => env('JWT_BLACKLIST_ENABLED', true),
+
+    /*
+    | -------------------------------------------------------------------------
+    | Blacklist Grace Period
+    | -------------------------------------------------------------------------
+    |
+    | When multiple concurrent requests are made with the same JWT,
+    | it is possible that some of them fail, due to token regeneration
+    | on every request.
+    |
+    | Set grace period in seconds to prevent parallel request failure.
+    |
+    */
+
+    'blacklist_grace_period' => env('JWT_BLACKLIST_GRACE_PERIOD', 0),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Cookies encryption
+    |--------------------------------------------------------------------------
+    |
+    | By default Laravel encrypt cookies for security reason.
+    | If you decide to not decrypt cookies, you will have to configure Laravel
+    | to not encrypt your cookie token by adding its name into the $except
+    | array available in the middleware "EncryptCookies" provided by Laravel.
+    | see https://laravel.com/docs/master/responses#cookies-and-encryption
+    | for details.
+    |
+    | Set it to true if you want to decrypt cookies.
+    |
+    */
+
+    'decrypt_cookies' => false,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Providers
+    |--------------------------------------------------------------------------
+    |
+    | Specify the various providers used throughout the package.
+    |
+    */
+
+    'providers' => [
+
+        /*
+        |--------------------------------------------------------------------------
+        | JWT Provider
+        |--------------------------------------------------------------------------
+        |
+        | Specify the provider that is used to create and decode the tokens.
+        |
+        */
+
+        'jwt' => Tymon\JWTAuth\Providers\JWT\Lcobucci::class,
+
+        /*
+        |--------------------------------------------------------------------------
+        | Authentication Provider
+        |--------------------------------------------------------------------------
+        |
+        | Specify the provider that is used to authenticate users.
+        |
+        */
+
+        'auth' => Tymon\JWTAuth\Providers\Auth\Illuminate::class,
+
+        /*
+        |--------------------------------------------------------------------------
+        | Storage Provider
+        |--------------------------------------------------------------------------
+        |
+        | Specify the provider that is used to store tokens in the blacklist.
+        |
+        */
+
+        'storage' => Tymon\JWTAuth\Providers\Storage\Illuminate::class,
+
+    ],
+
+];
+
+
+
+================================================
+FILE: config/l5-swagger.php
+================================================
+<?php
+
+return [
+    'default' => 'default',
+    'documentations' => [
+        'default' => [
+            'api' => [
+                'title' => 'L5 Swagger UI',
+            ],
+
+            'routes' => [
+                /*
+                 * Route for accessing api documentation interface
+                 */
+                'api' => 'api/documentation',
+            ],
+            'paths' => [
+                /*
+                 * Edit to include full URL in ui for assets
+                 */
+                'use_absolute_path' => env('L5_SWAGGER_USE_ABSOLUTE_PATH', true),
+
+                /*
+                * Edit to set path where swagger ui assets should be stored
+                */
+                'swagger_ui_assets_path' => env('L5_SWAGGER_UI_ASSETS_PATH', 'vendor/swagger-api/swagger-ui/dist/'),
+
+                /*
+                 * File name of the generated json documentation file
+                 */
+                'docs_json' => 'api-docs.json',
+
+                /*
+                 * File name of the generated YAML documentation file
+                 */
+                'docs_yaml' => 'api-docs.yaml',
+
+                /*
+                 * Set this to `json` or `yaml` to determine which documentation file to use in UI
+                 */
+                'format_to_use_for_docs' => env('L5_FORMAT_TO_USE_FOR_DOCS', 'json'),
+
+                /*
+                 * Absolute paths to directory containing the swagger annotations are stored.
+                 */
+                'annotations' => [
+                    base_path('app/Swagger'),
+                    base_path('app/Http/Controllers'),
+                ],
+            ],
+        ],
+    ],
+    'defaults' => [
+        'routes' => [
+            /*
+             * Route for accessing parsed swagger annotations.
+             */
+            'docs' => 'docs',
+
+            /*
+             * Route for Oauth2 authentication callback.
+             */
+            'oauth2_callback' => 'api/oauth2-callback',
+
+            /*
+             * Middleware allows to prevent unexpected access to API documentation
+             */
+            'middleware' => [
+                'api' => [],
+                'asset' => [],
+                'docs' => [],
+                'oauth2_callback' => [],
+            ],
+
+            /*
+             * Route Group options
+             */
+            'group_options' => [],
+        ],
+
+        'paths' => [
+            /*
+             * Absolute path to location where parsed annotations will be stored
+             */
+            'docs' => storage_path('api-docs'),
+
+            /*
+             * Absolute path to directory where to export views
+             */
+            'views' => base_path('resources/views/vendor/l5-swagger'),
+
+            /*
+             * Edit to set the api's base path
+             */
+            'base' => env('L5_SWAGGER_BASE_PATH', null),
+
+            /*
+             * Absolute path to directories that should be excluded from scanning
+             * @deprecated Please use `scanOptions.exclude`
+             * `scanOptions.exclude` overwrites this
+             */
+            'excludes' => [],
+        ],
+
+        'scanOptions' => [
+            /**
+             * Configuration for default processors. Allows to pass processors configuration to swagger-php.
+             *
+             * @link https://zircote.github.io/swagger-php/reference/processors.html
+             */
+            'default_processors_configuration' => [
+                /** Example */
+                /**
+             * 'operationId.hash' => true,
+             * 'pathFilter' => [
+             * 'tags' => [
+             * '/pets/',
+             * '/store/',
+             * ],
+             * ],.
+             */
+            ],
+
+            /**
+             * analyser: defaults to \OpenApi\StaticAnalyser .
+             *
+             * @see \OpenApi\scan
+             */
+            'analyser' => null,
+
+            /**
+             * analysis: defaults to a new \OpenApi\Analysis .
+             *
+             * @see \OpenApi\scan
+             */
+            'analysis' => null,
+
+            /**
+             * Custom query path processors classes.
+             *
+             * @link https://github.com/zircote/swagger-php/tree/master/Examples/processors/schema-query-parameter
+             * @see \OpenApi\scan
+             */
+            'processors' => [
+                // new \App\SwaggerProcessors\SchemaQueryParameter(),
+            ],
+
+            /**
+             * pattern: string       $pattern File pattern(s) to scan (default: *.php) .
+             *
+             * @see \OpenApi\scan
+             */
+            'pattern' => null,
+
+            /*
+             * Absolute path to directories that should be excluded from scanning
+             * @note This option overwrites `paths.excludes`
+             * @see \OpenApi\scan
+             */
+            'exclude' => [],
+
+            /*
+             * Allows to generate specs either for OpenAPI 3.0.0 or OpenAPI 3.1.0.
+             * By default the spec will be in version 3.0.0
+             */
+            'open_api_spec_version' => env('L5_SWAGGER_OPEN_API_SPEC_VERSION', \L5Swagger\Generator::OPEN_API_DEFAULT_SPEC_VERSION),
+        ],
+
+        /*
+         * API security definitions. Will be generated into documentation file.
+        */
+        'securityDefinitions' => [
+            'securitySchemes' => [
+                /*
+                 * Examples of Security schemes
+                 */
+                /*
+                'api_key_security_example' => [ // Unique name of security
+                    'type' => 'apiKey', // The type of the security scheme. Valid values are "basic", "apiKey" or "oauth2".
+                    'description' => 'A short description for security scheme',
+                    'name' => 'api_key', // The name of the header or query parameter to be used.
+                    'in' => 'header', // The location of the API key. Valid values are "query" or "header".
+                ],
+                'oauth2_security_example' => [ // Unique name of security
+                    'type' => 'oauth2', // The type of the security scheme. Valid values are "basic", "apiKey" or "oauth2".
+                    'description' => 'A short description for oauth2 security scheme.',
+                    'flow' => 'implicit', // The flow used by the OAuth2 security scheme. Valid values are "implicit", "password", "application" or "accessCode".
+                    'authorizationUrl' => 'http://example.com/auth', // The authorization URL to be used for (implicit/accessCode)
+                    //'tokenUrl' => 'http://example.com/auth' // The authorization URL to be used for (password/application/accessCode)
+                    'scopes' => [
+                        'read:projects' => 'read your projects',
+                        'write:projects' => 'modify projects in your account',
+                    ]
+                ],
+                */
+
+                /* Open API 3.0 support
+                'passport' => [ // Unique name of security
+                    'type' => 'oauth2', // The type of the security scheme. Valid values are "basic", "apiKey" or "oauth2".
+                    'description' => 'Laravel passport oauth2 security.',
+                    'in' => 'header',
+                    'scheme' => 'https',
+                    'flows' => [
+                        "password" => [
+                            "authorizationUrl" => config('app.url') . '/oauth/authorize',
+                            "tokenUrl" => config('app.url') . '/oauth/token',
+                            "refreshUrl" => config('app.url') . '/token/refresh',
+                            "scopes" => []
+                        ],
+                    ],
+                ],
+                'sanctum' => [ // Unique name of security
+                    'type' => 'apiKey', // Valid values are "basic", "apiKey" or "oauth2".
+                    'description' => 'Enter token in format (Bearer <token>)',
+                    'name' => 'Authorization', // The name of the header or query parameter to be used.
+                    'in' => 'header', // The location of the API key. Valid values are "query" or "header".
+                ],
+                */],
+            'security' => [
+                /*
+                 * Examples of Securities
+                 */
+                [
+                    /*
+                    'oauth2_security_example' => [
+                        'read',
+                        'write'
+                    ],
+
+                    'passport' => []
+                    */],
+            ],
+        ],
+
+        /*
+         * Set this to `true` in development mode so that docs would be regenerated on each request
+         * Set this to `false` to disable swagger generation on production
+         */
+        'generate_always' => env('L5_SWAGGER_GENERATE_ALWAYS', false),
+
+        /*
+         * Set this to `true` to generate a copy of documentation in yaml format
+         */
+        'generate_yaml_copy' => env('L5_SWAGGER_GENERATE_YAML_COPY', false),
+
+        /*
+         * Edit to trust the proxy's ip address - needed for AWS Load Balancer
+         * string[]
+         */
+        'proxy' => false,
+
+        /*
+         * Configs plugin allows to fetch external configs instead of passing them to SwaggerUIBundle.
+         * See more at: https://github.com/swagger-api/swagger-ui#configs-plugin
+         */
+        'additional_config_url' => null,
+
+        /*
+         * Apply a sort to the operation list of each API. It can be 'alpha' (sort by paths alphanumerically),
+         * 'method' (sort by HTTP method).
+         * Default is the order returned by the server unchanged.
+         */
+        'operations_sort' => env('L5_SWAGGER_OPERATIONS_SORT', null),
+
+        /*
+         * Pass the validatorUrl parameter to SwaggerUi init on the JS side.
+         * A null value here disables validation.
+         */
+        'validator_url' => null,
+
+        /*
+         * Swagger UI configuration parameters
+         */
+        'ui' => [
+            'display' => [
+                'dark_mode' => env('L5_SWAGGER_UI_DARK_MODE', false),
+                /*
+                 * Controls the default expansion setting for the operations and tags. It can be :
+                 * 'list' (expands only the tags),
+                 * 'full' (expands the tags and operations),
+                 * 'none' (expands nothing).
+                 */
+                'doc_expansion' => env('L5_SWAGGER_UI_DOC_EXPANSION', 'none'),
+
+                /**
+                 * If set, enables filtering. The top bar will show an edit box that
+                 * you can use to filter the tagged operations that are shown. Can be
+                 * Boolean to enable or disable, or a string, in which case filtering
+                 * will be enabled using that string as the filter expression. Filtering
+                 * is case-sensitive matching the filter expression anywhere inside
+                 * the tag.
+                 */
+                'filter' => env('L5_SWAGGER_UI_FILTERS', true), // true | false
+            ],
+
+            'authorization' => [
+                /*
+                 * If set to true, it persists authorization data, and it would not be lost on browser close/refresh
+                 */
+                'persist_authorization' => env('L5_SWAGGER_UI_PERSIST_AUTHORIZATION', false),
+
+                'oauth2' => [
+                    /*
+                     * If set to true, adds PKCE to AuthorizationCodeGrant flow
+                     */
+                    'use_pkce_with_authorization_code_grant' => false,
+                ],
+            ],
+        ],
+        /*
+         * Constants which can be used in annotations
+         */
+        'constants' => [
+            'L5_SWAGGER_CONST_HOST' => env('L5_SWAGGER_CONST_HOST', 'http://my-default-host.com'),
+        ],
+    ],
+];
+
+
+
+================================================
+FILE: config/logging.php
+================================================
+<?php
+
+use Monolog\Handler\NullHandler;
+use Monolog\Handler\StreamHandler;
+use Monolog\Handler\SyslogUdpHandler;
+use Monolog\Processor\PsrLogMessageProcessor;
+
+return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Default Log Channel
+    |--------------------------------------------------------------------------
+    |
+    | This option defines the default log channel that is utilized to write
+    | messages to your logs. The value provided here should match one of
+    | the channels present in the list of "channels" configured below.
+    |
+    */
+
+    'default' => env('LOG_CHANNEL', 'stack'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Deprecations Log Channel
+    |--------------------------------------------------------------------------
+    |
+    | This option controls the log channel that should be used to log warnings
+    | regarding deprecated PHP and library features. This allows you to get
+    | your application ready for upcoming major versions of dependencies.
+    |
+    */
+
+    'deprecations' => [
+        'channel' => env('LOG_DEPRECATIONS_CHANNEL', 'null'),
+        'trace' => env('LOG_DEPRECATIONS_TRACE', false),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Log Channels
+    |--------------------------------------------------------------------------
+    |
+    | Here you may configure the log channels for your application. Laravel
+    | utilizes the Monolog PHP logging library, which includes a variety
+    | of powerful log handlers and formatters that you're free to use.
+    |
+    | Available drivers: "single", "daily", "slack", "syslog",
+    |                    "errorlog", "monolog", "custom", "stack"
+    |
+    */
+
+    'channels' => [
+
+        'stack' => [
+            'driver' => 'stack',
+            'channels' => explode(',', (string) env('LOG_STACK', 'single')),
+            'ignore_exceptions' => false,
+        ],
+
+        'single' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/laravel.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'replace_placeholders' => true,
+        ],
+
+        'daily' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/laravel.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'days' => env('LOG_DAILY_DAYS', 14),
+            'replace_placeholders' => true,
+        ],
+
+        'slack' => [
+            'driver' => 'slack',
+            'url' => env('LOG_SLACK_WEBHOOK_URL'),
+            'username' => env('LOG_SLACK_USERNAME', 'Laravel Log'),
+            'emoji' => env('LOG_SLACK_EMOJI', ':boom:'),
+            'level' => env('LOG_LEVEL', 'critical'),
+            'replace_placeholders' => true,
+        ],
+
+        'papertrail' => [
+            'driver' => 'monolog',
+            'level' => env('LOG_LEVEL', 'debug'),
+            'handler' => env('LOG_PAPERTRAIL_HANDLER', SyslogUdpHandler::class),
+            'handler_with' => [
+                'host' => env('PAPERTRAIL_URL'),
+                'port' => env('PAPERTRAIL_PORT'),
+                'connectionString' => 'tls://'.env('PAPERTRAIL_URL').':'.env('PAPERTRAIL_PORT'),
+            ],
+            'processors' => [PsrLogMessageProcessor::class],
+        ],
+
+        'stderr' => [
+            'driver' => 'monolog',
+            'level' => env('LOG_LEVEL', 'debug'),
+            'handler' => StreamHandler::class,
+            'handler_with' => [
+                'stream' => 'php://stderr',
+            ],
+            'formatter' => env('LOG_STDERR_FORMATTER'),
+            'processors' => [PsrLogMessageProcessor::class],
+        ],
+
+        'syslog' => [
+            'driver' => 'syslog',
+            'level' => env('LOG_LEVEL', 'debug'),
+            'facility' => env('LOG_SYSLOG_FACILITY', LOG_USER),
+            'replace_placeholders' => true,
+        ],
+
+        'errorlog' => [
+            'driver' => 'errorlog',
+            'level' => env('LOG_LEVEL', 'debug'),
+            'replace_placeholders' => true,
+        ],
+
+        'null' => [
+            'driver' => 'monolog',
+            'handler' => NullHandler::class,
+        ],
+
+        'emergency' => [
+            'path' => storage_path('logs/laravel.log'),
+        ],
+
+    ],
+
+];
+
+
+
+================================================
+FILE: config/mail.php
+================================================
+<?php
+
+return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Default Mailer
+    |--------------------------------------------------------------------------
+    |
+    | This option controls the default mailer that is used to send all email
+    | messages unless another mailer is explicitly specified when sending
+    | the message. All additional mailers can be configured within the
+    | "mailers" array. Examples of each type of mailer are provided.
+    |
+    */
+
+    'default' => env('MAIL_MAILER', 'log'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Mailer Configurations
+    |--------------------------------------------------------------------------
+    |
+    | Here you may configure all of the mailers used by your application plus
+    | their respective settings. Several examples have been configured for
+    | you and you are free to add your own as your application requires.
+    |
+    | Laravel supports a variety of mail "transport" drivers that can be used
+    | when delivering an email. You may specify which one you're using for
+    | your mailers below. You may also add additional mailers if needed.
+    |
+    | Supported: "smtp", "sendmail", "mailgun", "ses", "ses-v2",
+    |            "postmark", "resend", "log", "array",
+    |            "failover", "roundrobin"
+    |
+    */
+
+    'mailers' => [
+
+        'smtp' => [
+            'transport' => 'smtp',
+            'scheme' => env('MAIL_SCHEME'),
+            'url' => env('MAIL_URL'),
+            'host' => env('MAIL_HOST', '127.0.0.1'),
+            'port' => env('MAIL_PORT', 2525),
+            'username' => env('MAIL_USERNAME'),
+            'password' => env('MAIL_PASSWORD'),
+            'timeout' => null,
+            'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url((string) env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
+        ],
+
+        'ses' => [
+            'transport' => 'ses',
+        ],
+
+        'postmark' => [
+            'transport' => 'postmark',
+            // 'message_stream_id' => env('POSTMARK_MESSAGE_STREAM_ID'),
+            // 'client' => [
+            //     'timeout' => 5,
+            // ],
+        ],
+
+        'resend' => [
+            'transport' => 'resend',
+        ],
+
+        'sendmail' => [
+            'transport' => 'sendmail',
+            'path' => env('MAIL_SENDMAIL_PATH', '/usr/sbin/sendmail -bs -i'),
+        ],
+
+        'log' => [
+            'transport' => 'log',
+            'channel' => env('MAIL_LOG_CHANNEL'),
+        ],
+
+        'array' => [
+            'transport' => 'array',
+        ],
+
+        'failover' => [
+            'transport' => 'failover',
+            'mailers' => [
+                'smtp',
+                'log',
+            ],
+            'retry_after' => 60,
+        ],
+
+        'roundrobin' => [
+            'transport' => 'roundrobin',
+            'mailers' => [
+                'ses',
+                'postmark',
+            ],
+            'retry_after' => 60,
+        ],
+
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Global "From" Address
+    |--------------------------------------------------------------------------
+    |
+    | You may wish for all emails sent by your application to be sent from
+    | the same address. Here you may specify a name and address that is
+    | used globally for all emails that are sent by your application.
+    |
+    */
+
+    'from' => [
+        'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
+        'name' => env('MAIL_FROM_NAME', 'Example'),
+    ],
+
+];
+
+
+
+================================================
+FILE: config/queue.php
+================================================
+<?php
+
+return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Default Queue Connection Name
+    |--------------------------------------------------------------------------
+    |
+    | Laravel's queue supports a variety of backends via a single, unified
+    | API, giving you convenient access to each backend using identical
+    | syntax for each. The default queue connection is defined below.
+    |
+    */
+
+    'default' => env('QUEUE_CONNECTION', 'database'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Queue Connections
+    |--------------------------------------------------------------------------
+    |
+    | Here you may configure the connection options for every queue backend
+    | used by your application. An example configuration is provided for
+    | each backend supported by Laravel. You're also free to add more.
+    |
+    | Drivers: "sync", "database", "beanstalkd", "sqs", "redis", "null"
+    |
+    */
+
+    'connections' => [
+
+        'sync' => [
+            'driver' => 'sync',
+        ],
+
+        'database' => [
+            'driver' => 'database',
+            'connection' => env('DB_QUEUE_CONNECTION'),
+            'table' => env('DB_QUEUE_TABLE', 'jobs'),
+            'queue' => env('DB_QUEUE', 'default'),
+            'retry_after' => (int) env('DB_QUEUE_RETRY_AFTER', 90),
+            'after_commit' => false,
+        ],
+
+        'beanstalkd' => [
+            'driver' => 'beanstalkd',
+            'host' => env('BEANSTALKD_QUEUE_HOST', 'localhost'),
+            'queue' => env('BEANSTALKD_QUEUE', 'default'),
+            'retry_after' => (int) env('BEANSTALKD_QUEUE_RETRY_AFTER', 90),
+            'block_for' => 0,
+            'after_commit' => false,
+        ],
+
+        'sqs' => [
+            'driver' => 'sqs',
+            'key' => env('AWS_ACCESS_KEY_ID'),
+            'secret' => env('AWS_SECRET_ACCESS_KEY'),
+            'prefix' => env('SQS_PREFIX', 'https://sqs.us-east-1.amazonaws.com/your-account-id'),
+            'queue' => env('SQS_QUEUE', 'default'),
+            'suffix' => env('SQS_SUFFIX'),
+            'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
+            'after_commit' => false,
+        ],
+
+        'redis' => [
+            'driver' => 'redis',
+            'connection' => env('REDIS_QUEUE_CONNECTION', 'default'),
+            'queue' => env('REDIS_QUEUE', 'default'),
+            'retry_after' => (int) env('REDIS_QUEUE_RETRY_AFTER', 90),
+            'block_for' => null,
+            'after_commit' => false,
+        ],
+
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Job Batching
+    |--------------------------------------------------------------------------
+    |
+    | The following options configure the database and table that store job
+    | batching information. These options can be updated to any database
+    | connection and table which has been defined by your application.
+    |
+    */
+
+    'batching' => [
+        'database' => env('DB_CONNECTION', 'sqlite'),
+        'table' => 'job_batches',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Failed Queue Jobs
+    |--------------------------------------------------------------------------
+    |
+    | These options configure the behavior of failed queue job logging so you
+    | can control how and where failed jobs are stored. Laravel ships with
+    | support for storing failed jobs in a simple file or in a database.
+    |
+    | Supported drivers: "database-uuids", "dynamodb", "file", "null"
+    |
+    */
+
+    'failed' => [
+        'driver' => env('QUEUE_FAILED_DRIVER', 'database-uuids'),
+        'database' => env('DB_CONNECTION', 'sqlite'),
+        'table' => 'failed_jobs',
+    ],
+
+];
+
+
+
+================================================
+FILE: config/services.php
+================================================
+<?php
+
+return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Third Party Services
+    |--------------------------------------------------------------------------
+    |
+    | This file is for storing the credentials for third party services such
+    | as Mailgun, Postmark, AWS and more. This file provides the de facto
+    | location for this type of information, allowing packages to have
+    | a conventional file to locate the various service credentials.
+    |
+    */
+
+    'postmark' => [
+        'token' => env('POSTMARK_TOKEN'),
+    ],
+
+    'resend' => [
+        'key' => env('RESEND_KEY'),
+    ],
+
+    'ses' => [
+        'key' => env('AWS_ACCESS_KEY_ID'),
+        'secret' => env('AWS_SECRET_ACCESS_KEY'),
+        'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
+    ],
+
+    'slack' => [
+        'notifications' => [
+            'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
+            'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
+        ],
+    ],
+
+];
+
+
+
+================================================
+FILE: config/session.php
+================================================
+<?php
+
+use Illuminate\Support\Str;
+
+return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Default Session Driver
+    |--------------------------------------------------------------------------
+    |
+    | This option determines the default session driver that is utilized for
+    | incoming requests. Laravel supports a variety of storage options to
+    | persist session data. Database storage is a great default choice.
+    |
+    | Supported: "file", "cookie", "database", "memcached",
+    |            "redis", "dynamodb", "array"
+    |
+    */
+
+    'driver' => env('SESSION_DRIVER', 'database'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Session Lifetime
+    |--------------------------------------------------------------------------
+    |
+    | Here you may specify the number of minutes that you wish the session
+    | to be allowed to remain idle before it expires. If you want them
+    | to expire immediately when the browser is closed then you may
+    | indicate that via the expire_on_close configuration option.
+    |
+    */
+
+    'lifetime' => (int) env('SESSION_LIFETIME', 120),
+
+    'expire_on_close' => env('SESSION_EXPIRE_ON_CLOSE', false),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Session Encryption
+    |--------------------------------------------------------------------------
+    |
+    | This option allows you to easily specify that all of your session data
+    | should be encrypted before it's stored. All encryption is performed
+    | automatically by Laravel and you may use the session like normal.
+    |
+    */
+
+    'encrypt' => env('SESSION_ENCRYPT', false),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Session File Location
+    |--------------------------------------------------------------------------
+    |
+    | When utilizing the "file" session driver, the session files are placed
+    | on disk. The default storage location is defined here; however, you
+    | are free to provide another location where they should be stored.
+    |
+    */
+
+    'files' => storage_path('framework/sessions'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Session Database Connection
+    |--------------------------------------------------------------------------
+    |
+    | When using the "database" or "redis" session drivers, you may specify a
+    | connection that should be used to manage these sessions. This should
+    | correspond to a connection in your database configuration options.
+    |
+    */
+
+    'connection' => env('SESSION_CONNECTION'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Session Database Table
+    |--------------------------------------------------------------------------
+    |
+    | When using the "database" session driver, you may specify the table to
+    | be used to store sessions. Of course, a sensible default is defined
+    | for you; however, you're welcome to change this to another table.
+    |
+    */
+
+    'table' => env('SESSION_TABLE', 'sessions'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Session Cache Store
+    |--------------------------------------------------------------------------
+    |
+    | When using one of the framework's cache driven session backends, you may
+    | define the cache store which should be used to store the session data
+    | between requests. This must match one of your defined cache stores.
+    |
+    | Affects: "dynamodb", "memcached", "redis"
+    |
+    */
+
+    'store' => env('SESSION_STORE'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Session Sweeping Lottery
+    |--------------------------------------------------------------------------
+    |
+    | Some session drivers must manually sweep their storage location to get
+    | rid of old sessions from storage. Here are the chances that it will
+    | happen on a given request. By default, the odds are 2 out of 100.
+    |
+    */
+
+    'lottery' => [2, 100],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Session Cookie Name
+    |--------------------------------------------------------------------------
+    |
+    | Here you may change the name of the session cookie that is created by
+    | the framework. Typically, you should not need to change this value
+    | since doing so does not grant a meaningful security improvement.
+    |
+    */
+
+    'cookie' => env(
+        'SESSION_COOKIE',
+        Str::slug(env('APP_NAME', 'laravel')).'-session'
+    ),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Session Cookie Path
+    |--------------------------------------------------------------------------
+    |
+    | The session cookie path determines the path for which the cookie will
+    | be regarded as available. Typically, this will be the root path of
+    | your application, but you're free to change this when necessary.
+    |
+    */
+
+    'path' => env('SESSION_PATH', '/'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Session Cookie Domain
+    |--------------------------------------------------------------------------
+    |
+    | This value determines the domain and subdomains the session cookie is
+    | available to. By default, the cookie will be available to the root
+    | domain and all subdomains. Typically, this shouldn't be changed.
+    |
+    */
+
+    'domain' => env('SESSION_DOMAIN'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | HTTPS Only Cookies
+    |--------------------------------------------------------------------------
+    |
+    | By setting this option to true, session cookies will only be sent back
+    | to the server if the browser has a HTTPS connection. This will keep
+    | the cookie from being sent to you when it can't be done securely.
+    |
+    */
+
+    'secure' => env('SESSION_SECURE_COOKIE'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | HTTP Access Only
+    |--------------------------------------------------------------------------
+    |
+    | Setting this value to true will prevent JavaScript from accessing the
+    | value of the cookie and the cookie will only be accessible through
+    | the HTTP protocol. It's unlikely you should disable this option.
+    |
+    */
+
+    'http_only' => env('SESSION_HTTP_ONLY', true),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Same-Site Cookies
+    |--------------------------------------------------------------------------
+    |
+    | This option determines how your cookies behave when cross-site requests
+    | take place, and can be used to mitigate CSRF attacks. By default, we
+    | will set this value to "lax" to permit secure cross-site requests.
+    |
+    | See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#samesitesamesite-value
+    |
+    | Supported: "lax", "strict", "none", null
+    |
+    */
+
+    'same_site' => env('SESSION_SAME_SITE', 'lax'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Partitioned Cookies
+    |--------------------------------------------------------------------------
+    |
+    | Setting this value to true will tie the cookie to the top-level site for
+    | a cross-site context. Partitioned cookies are accepted by the browser
+    | when flagged "secure" and the Same-Site attribute is set to "none".
+    |
+    */
+
+    'partitioned' => env('SESSION_PARTITIONED_COOKIE', false),
+
+];
+
+
+
+================================================
+FILE: database/factories/UserFactory.php
+================================================
+<?php
+
+namespace Database\Factories;
+
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+
+/**
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
+ */
+class UserFactory extends Factory
+{
+    /**
+     * The current password being used by the factory.
+     */
+    protected static ?string $password;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array
+    {
+        return [
+            'name' => fake()->name(),
+            'email' => fake()->unique()->safeEmail(),
+            'email_verified_at' => now(),
+            'password' => static::$password ??= Hash::make('password'),
+            'remember_token' => Str::random(10),
+        ];
+    }
+
+    /**
+     * Indicate that the model's email address should be unverified.
+     */
+    public function unverified(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'email_verified_at' => null,
+        ]);
+    }
+}
+
+
+
+================================================
+FILE: database/migrations/0001_01_01_000000_create_users_table.php
+================================================
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('users', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password');
+            $table->rememberToken();
+            $table->timestamps();
+        });
+
+        Schema::create('password_reset_tokens', function (Blueprint $table) {
+            $table->string('email')->primary();
+            $table->string('token');
+            $table->timestamp('created_at')->nullable();
+        });
+
+        Schema::create('sessions', function (Blueprint $table) {
+            $table->string('id')->primary();
+            $table->foreignId('user_id')->nullable()->index();
+            $table->string('ip_address', 45)->nullable();
+            $table->text('user_agent')->nullable();
+            $table->longText('payload');
+            $table->integer('last_activity')->index();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('users');
+        Schema::dropIfExists('password_reset_tokens');
+        Schema::dropIfExists('sessions');
+    }
+};
+
+
+
+================================================
+FILE: database/migrations/0001_01_01_000001_create_cache_table.php
+================================================
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('cache', function (Blueprint $table) {
+            $table->string('key')->primary();
+            $table->mediumText('value');
+            $table->integer('expiration');
+        });
+
+        Schema::create('cache_locks', function (Blueprint $table) {
+            $table->string('key')->primary();
+            $table->string('owner');
+            $table->integer('expiration');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('cache');
+        Schema::dropIfExists('cache_locks');
+    }
+};
+
+
+
+================================================
+FILE: database/migrations/0001_01_01_000002_create_jobs_table.php
+================================================
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('jobs', function (Blueprint $table) {
+            $table->id();
+            $table->string('queue')->index();
+            $table->longText('payload');
+            $table->unsignedTinyInteger('attempts');
+            $table->unsignedInteger('reserved_at')->nullable();
+            $table->unsignedInteger('available_at');
+            $table->unsignedInteger('created_at');
+        });
+
+        Schema::create('job_batches', function (Blueprint $table) {
+            $table->string('id')->primary();
+            $table->string('name');
+            $table->integer('total_jobs');
+            $table->integer('pending_jobs');
+            $table->integer('failed_jobs');
+            $table->longText('failed_job_ids');
+            $table->mediumText('options')->nullable();
+            $table->integer('cancelled_at')->nullable();
+            $table->integer('created_at');
+            $table->integer('finished_at')->nullable();
+        });
+
+        Schema::create('failed_jobs', function (Blueprint $table) {
+            $table->id();
+            $table->string('uuid')->unique();
+            $table->text('connection');
+            $table->text('queue');
+            $table->longText('payload');
+            $table->longText('exception');
+            $table->timestamp('failed_at')->useCurrent();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('jobs');
+        Schema::dropIfExists('job_batches');
+        Schema::dropIfExists('failed_jobs');
+    }
+};
+
+
+
+================================================
+FILE: database/migrations/2025_08_20_011936_create_especialidades_table.php
+================================================
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('especialidades', function (Blueprint $table) {
+            $table->id();
+            $table->string('nombre', 100)->unique();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('especialidades');
+    }
+};
+
+
+
+================================================
+FILE: database/migrations/2025_08_20_012057_create_doctores_table.php
+================================================
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('doctores', function (Blueprint $table) {
+            $table->id();
+            $table->string('nombre', 100);
+            $table->string('apellido', 100);
+            $table->string('email', 150)->unique();
+            $table->string('telefono', 15)->nullable();
+            $table->enum('genero', ['M', 'F', 'O'])->nullable();
+            $table->enum('estado', ['activo', 'inactivo'])->default('activo');
+            $table->unsignedBigInteger('especialidad_id');
+            $table->foreign('especialidad_id')->references('id')->on('especialidades')->onDelete('cascade');
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('doctores');
+    }
+};
+
+
+
+================================================
+FILE: database/migrations/2025_08_20_012120_create_pacientes_table.php
+================================================
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('pacientes', function (Blueprint $table) {
+            $table->id();
+            $table->string('documento', 20)->unique();
+            $table->string('nombre', 100);
+            $table->string('apellido', 100);
+            $table->string('email', 150)->unique();
+            $table->string('telefono', 15)->nullable();
+            $table->enum('genero', ['M', 'F', 'O'])->nullable();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('pacientes');
+    }
+};
+
+
+
+================================================
+FILE: database/migrations/2025_08_20_012137_create_citas_medicas_table.php
+================================================
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('citas_medicas', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('paciente_id'); // Agrega la columna
+            $table->unsignedBigInteger('doctor_id');   // Agrega la columna
+            $table->foreign('paciente_id')->references('id')->on('pacientes')->onDelete('cascade');
+            $table->foreign('doctor_id')->references('id')->on('doctores')->onDelete('cascade');
+            $table->dateTime('fecha_hora');
+            $table->enum('estado', ['programada', 'completada', 'cancelada'])->default('programada');
+            $table->text('novedad')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    /** 
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('citas_medicas');
+    }
+};
+
+
+
+================================================
+FILE: database/migrations/2025_08_23_003921_create_consultorios_table.php
+================================================
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('consultorios', function (Blueprint $table) {
+        $table->id();
+        $table->string('nombre', 80);
+        $table->string('ubicacion')->nullable();
+        $table->unsignedTinyInteger('piso')->nullable();
+        $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('consultorios');
+    }
+};
+
+
+
+================================================
+FILE: database/migrations/2025_09_03_022014_addroleuser.php
+================================================
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        //
+        Schema::table('users', function(Blueprint $table){
+            $table->string('rol')->unique();
+        });
+
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        //
+        Schema::table('users', function(Blueprint $table){
+            $table->dropColumn('rol');
+        });
+    }
+};
+
+
+
+================================================
+FILE: database/seeders/DatabaseSeeder.php
+================================================
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\User;
+// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
+
+class DatabaseSeeder extends Seeder
+{
+    /**
+     * Seed the application's database.
+     */
+    public function run(): void
+    {
+        // User::factory(10)->create();
+
+        User::factory()->create([
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+        ]);
+    }
+}
+
+
+
+================================================
+FILE: public/index.php
+================================================
+<?php
+
+use Illuminate\Foundation\Application;
+use Illuminate\Http\Request;
+
+define('LARAVEL_START', microtime(true));
+
+// Determine if the application is in maintenance mode...
+if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php')) {
+    require $maintenance;
+}
+
+// Register the Composer autoloader...
+require __DIR__.'/../vendor/autoload.php';
+
+// Bootstrap Laravel and handle the request...
+/** @var Application $app */
+$app = require_once __DIR__.'/../bootstrap/app.php';
+
+$app->handleRequest(Request::capture());
+
+
+
+================================================
+FILE: public/robots.txt
+================================================
+User-agent: *
+Disallow:
+
+
+
+================================================
+FILE: public/.htaccess
+================================================
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
+
+    RewriteEngine On
+
+    # Handle Authorization Header
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # Handle X-XSRF-Token Header
+    RewriteCond %{HTTP:x-xsrf-token} .
+    RewriteRule .* - [E=HTTP_X_XSRF_TOKEN:%{HTTP:X-XSRF-Token}]
+
+    # Redirect Trailing Slashes If Not A Folder...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} (.+)/$
+    RewriteRule ^ %1 [L,R=301]
+
+    # Send Requests To Front Controller...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
+</IfModule>
+
+
+
+================================================
+FILE: resources/css/app.css
+================================================
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+
+
+================================================
+FILE: resources/js/app.js
+================================================
+import './bootstrap';
+
+
+
+================================================
+FILE: resources/js/bootstrap.js
+================================================
+import axios from 'axios';
+window.axios = axios;
+
+window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
+
+
+================================================
+FILE: routes/api.php
+================================================
+<?php
+
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CitasMedicasController;
+use App\Http\Controllers\ConsultoriosController;
+use App\Http\Controllers\DoctoresController;
+use App\Http\Controllers\EspecialidadesController;
+use App\Http\Controllers\PacientesController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+
+// Route::get('/user', function (Request $request) {
+//     return $request->user();
+// })->middleware('auth:sanctum');
+
+
+/**
+ * API Routes
+ */
+
+//Crear el usuario
+Route::post('/addUser', [AuthController::class, 'crearUsuario']);
+//Login
+Route::post('/login', [AuthController::class, 'login']);
+
+Route::middleware('auth:api')->group(function () {
+    //Especialidades Routes
+    Route::get("/listarEspecialidades", [EspecialidadesController::class, 'index'])->middleware('rol:admin');
+    Route::post("/AgregarEspecialidad", [EspecialidadesController::class, 'store'])->middleware('rol:admin');
+    Route::get("/especialidade/{id}", [EspecialidadesController::class, 'show'])->middleware('rol:admin');
+    Route::put("/AcualizarEspecialidad/{id}", [EspecialidadesController::class, 'update'])->middleware('rol:admin');
+    Route::delete("/DeliminarEspecialidad/{id}", [EspecialidadesController::class, 'destroy'])->middleware('rol:admin');
+
+    //Doctores Routes
+    Route::get("/listarDoctores", [DoctoresController::class, 'index'])->middleware('rol:admin');
+    Route::post("/AgregarDoctor", [DoctoresController::class, 'store'])->middleware('rol:admin');
+    Route::get("/doctor/{id}", [DoctoresController::class, 'show'])->middleware('rol:admin');
+    Route::put("/ActualizarDoctor/{id}", [DoctoresController::class, 'update'])->middleware('rol:admin');
+    Route::delete("/EliminarDoctor/{id}", [DoctoresController::class, 'destroy'])->middleware('rol:admin');
+    Route::get("/doctoresActivos", [DoctoresController::class, 'doctoresActivos'])->middleware('rol:admin');
+    Route::get("/doctoresFemeninos", [DoctoresController::class, 'doctoresFemeninos'])->middleware('rol:admin');
+
+    //Pacientes Routes
+    Route::get("/listarPacientes", [PacientesController::class, 'index'])->middleware('rol:admin');
+    Route::post("/AgregarPaciente", [PacientesController::class, 'store'])->middleware('rol:admin');
+    Route::get("/paciente/{id}", [PacientesController::class, 'show'])->middleware('rol:admin');
+    Route::put("/ActualizarPaciente/{id}", [PacientesController::class, 'update'])->middleware('rol:admin');
+    Route::delete("/EliminarPaciente/{id}", [PacientesController::class, 'destroy'])->middleware('rol:admin');
+    Route::get("/pacientesMasculinos", [PacientesController::class, 'pacientesMasculinos'])->middleware('rol:admin');
+
+    //Citas Médicas Routes
+    Route::get("/listarCitasMedicas", [CitasMedicasController::class, 'index'])->middleware('rol:admin');
+    Route::post("/AgregarCitaMedica", [CitasMedicasController::class, 'store'])->middleware('rol:admin');
+    Route::get("/citaMedica/{id}", [CitasMedicasController::class, 'show'])->middleware('rol:admin');
+    Route::put("/ActualizarCitaMedica/{id}", [CitasMedicasController::class, 'update'])->middleware('rol:admin');
+    Route::delete("/EliminarCitaMedica/{id}", [CitasMedicasController::class, 'destroy'])->middleware('rol:admin');
+    Route::get("/citasPorPaciente/{pacienteId}", [CitasMedicasController::class, 'citasPorPaciente'])->middleware('rol:admin');
+    Route::get("/citasPorDoctor/{doctorId}", [CitasMedicasController::class, 'citasPorDoctor'])->middleware('rol:admin');
+    Route::get("/citasCompletadas", [CitasMedicasController::class, 'citasCompletadas'])->middleware('rol:admin');
+
+    // Consultorios Routes
+    Route::get('/consultorios',                [ConsultoriosController::class, 'index'])->middleware('rol:admin');
+    Route::post('/consultorios',                [ConsultoriosController::class, 'store'])->middleware('rol:admin');
+    Route::get('/consultorios/{consultorio}',  [ConsultoriosController::class, 'show'])->middleware('rol:admin');
+    Route::put('/consultorios/{consultorio}',  [ConsultoriosController::class, 'update'])->middleware('rol:admin');
+    Route::delete('/consultorios/{consultorio}',  [ConsultoriosController::class, 'destroy'])->middleware('rol:admin');
+});
+
+
+
+================================================
+FILE: routes/console.php
+================================================
+<?php
+
+use Illuminate\Foundation\Inspiring;
+use Illuminate\Support\Facades\Artisan;
+
+Artisan::command('inspire', function () {
+    $this->comment(Inspiring::quote());
+})->purpose('Display an inspiring quote');
+
+
+
+================================================
+FILE: routes/web.php
+================================================
+<?php
+
+use Illuminate\Support\Facades\Route;
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+
+
+================================================
+FILE: storage/api-docs/api-docs.json
+================================================
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API de Gestión de Citas Médicas",
+        "description": "Documentación de la API",
+        "contact": {
+            "email": "contacto@ejemplo.com"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000",
+            "description": "Servidor local"
+        }
+    ],
+    "paths": {
+        "/api/listarCitasMedicas": {
+            "get": {
+                "tags": [
+                    "Citas Médicas"
+                ],
+                "summary": "Listar todas las citas médicas",
+                "operationId": "9636f8f8a652b0b1e7213b4720e479fe",
+                "responses": {
+                    "200": {
+                        "description": "Lista de citas médicas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/CitaMedica"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/AgregarCitaMedica": {
+            "post": {
+                "tags": [
+                    "Citas Médicas"
+                ],
+                "summary": "Crear una nueva cita médica",
+                "operationId": "1fb2229555a424400f8561222b97a244",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CitaMedica"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Cita médica creada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CitaMedica"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Errores de validación"
+                    }
+                }
+            }
+        },
+        "/api/citaMedica/{id}": {
+            "get": {
+                "tags": [
+                    "Citas Médicas"
+                ],
+                "summary": "Obtener una cita médica por ID",
+                "operationId": "666b8dbc51c0f8e5ad10f8e704e786cc",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Datos de la cita médica",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CitaMedica"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Cita médica no encontrada"
+                    }
+                }
+            }
+        },
+        "/api/ActualizarCitaMedica/{id}": {
+            "put": {
+                "tags": [
+                    "Citas Médicas"
+                ],
+                "summary": "Actualizar una cita médica",
+                "operationId": "814875cd93f71f60d236e57a8e2cc550",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CitaMedica"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Cita médica actualizada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CitaMedica"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Cita médica no encontrada"
+                    },
+                    "422": {
+                        "description": "Errores de validación"
+                    }
+                }
+            }
+        },
+        "/api/EliminarCitaMedica/{id}": {
+            "delete": {
+                "tags": [
+                    "Citas Médicas"
+                ],
+                "summary": "Eliminar una cita médica",
+                "operationId": "85b98c1e03c7bb1440a5596cb88c70ba",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Cita médica eliminada con éxito"
+                    },
+                    "404": {
+                        "description": "Cita médica no encontrada"
+                    }
+                }
+            }
+        },
+        "/api/citasPorPaciente/{pacienteId}": {
+            "get": {
+                "tags": [
+                    "Citas Médicas"
+                ],
+                "summary": "Obtener citas por paciente",
+                "operationId": "39a2f0f810af4dc226b1d85cb8aff72d",
+                "parameters": [
+                    {
+                        "name": "pacienteId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de citas del paciente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/CitaMedica"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No se encontraron citas médicas para este paciente"
+                    }
+                }
+            }
+        },
+        "/api/citasPorDoctor/{doctorId}": {
+            "get": {
+                "tags": [
+                    "Citas Médicas"
+                ],
+                "summary": "Obtener citas por doctor",
+                "operationId": "9b92486ca9f32d9d6bbfa81fb0cbef93",
+                "parameters": [
+                    {
+                        "name": "doctorId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de citas del doctor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/CitaMedica"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No se encontraron citas médicas para este doctor"
+                    }
+                }
+            }
+        },
+        "/api/citasCompletadas": {
+            "get": {
+                "tags": [
+                    "Citas Médicas"
+                ],
+                "summary": "Obtener citas completadas",
+                "operationId": "e67edfdd4d342e410014e6b2f38d7329",
+                "responses": {
+                    "200": {
+                        "description": "Lista de citas completadas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/CitaMedica"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No se encontraron citas médicas completadas"
+                    }
+                }
+            }
+        },
+        "/api/consultorios": {
+            "get": {
+                "tags": [
+                    "Consultorios"
+                ],
+                "summary": "Lista todos los consultorios",
+                "operationId": "4128008a2bda4165021f87ee6a43eff5",
+                "responses": {
+                    "200": {
+                        "description": "Lista de consultorios",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Consultorio"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Consultorios"
+                ],
+                "summary": "Crear un nuevo consultorio",
+                "operationId": "ef5e542fbe3dfbdf6f26bbb18806b1e1",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Consultorio"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Consultorio creado correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Consultorio"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Errores de validación"
+                    }
+                }
+            }
+        },
+        "/api/consultorios/{id}": {
+            "get": {
+                "tags": [
+                    "Consultorios"
+                ],
+                "summary": "Muestra un consultorio específico",
+                "operationId": "10deb26a7d79d6797165b287f4d3e6f9",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del consultorio",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Datos del consultorio",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Consultorio"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Consultorio no encontrado"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Consultorios"
+                ],
+                "summary": "Actualizar un consultorio existente",
+                "operationId": "0bb02eb122cc136699f48610363392c2",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del consultorio",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Consultorio"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Consultorio actualizado correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Consultorio"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Errores de validación"
+                    },
+                    "404": {
+                        "description": "Consultorio no encontrado"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Consultorios"
+                ],
+                "summary": "Eliminar un consultorio",
+                "operationId": "ff9339ecee74f85025c4f1b3f187a9a9",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del consultorio",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Consultorio eliminado con éxito",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Consultorio no encontrado"
+                    }
+                }
+            }
+        },
+        "/api/listarDoctores": {
+            "get": {
+                "tags": [
+                    "Doctores"
+                ],
+                "summary": "Lista todos los doctores",
+                "operationId": "9595527b0913d7b7a5d2b02416827f03",
+                "responses": {
+                    "200": {
+                        "description": "Lista de doctores",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Doctor"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/AgregarDoctor": {
+            "post": {
+                "tags": [
+                    "Doctores"
+                ],
+                "summary": "Crea un nuevo doctor",
+                "operationId": "fa354e6be148ef04efd8b510f40c155b",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Doctor"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Doctor creado"
+                    },
+                    "422": {
+                        "description": "Errores de validación"
+                    }
+                }
+            }
+        },
+        "/api/doctor/{id}": {
+            "get": {
+                "tags": [
+                    "Doctores"
+                ],
+                "summary": "Obtiene un doctor por ID",
+                "operationId": "7ae317a48767d61dfc829cb5fcd0a285",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Doctor encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Doctor"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Doctor no encontrado"
+                    }
+                }
+            }
+        },
+        "/api/ActualizarDoctor/{id}": {
+            "put": {
+                "tags": [
+                    "Doctores"
+                ],
+                "summary": "Actualiza un doctor por ID",
+                "operationId": "3b5a0c4bb6d95806f3ab22e1bf540224",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Doctor"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Doctor actualizado"
+                    },
+                    "404": {
+                        "description": "Doctor no encontrado"
+                    },
+                    "422": {
+                        "description": "Errores de validación"
+                    }
+                }
+            }
+        },
+        "/api/EliminarDoctor/{id}": {
+            "delete": {
+                "tags": [
+                    "Doctores"
+                ],
+                "summary": "Elimina un doctor por ID",
+                "operationId": "bca72af6f277952c3d9babacb1574b68",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Doctor eliminado"
+                    },
+                    "404": {
+                        "description": "Doctor no encontrado"
+                    }
+                }
+            }
+        },
+        "/api/doctoresActivos": {
+            "get": {
+                "tags": [
+                    "Doctores"
+                ],
+                "summary": "Lista todos los doctores activos",
+                "operationId": "9833bad33bc46070e3eb32c1b2687f51",
+                "responses": {
+                    "200": {
+                        "description": "Lista de doctores activos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Doctor"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/doctoresFemeninos": {
+            "get": {
+                "tags": [
+                    "Doctores"
+                ],
+                "summary": "Lista todos los doctores femeninos",
+                "operationId": "70aa29e8a1cc94ca82f0e6ca8f31fc47",
+                "responses": {
+                    "200": {
+                        "description": "Lista de doctores femeninos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Doctor"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "CitaMedica": {
+                "title": "Cita Médica",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "paciente_id": {
+                        "type": "integer"
+                    },
+                    "doctor_id": {
+                        "type": "integer"
+                    },
+                    "fecha_hora": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "estado": {
+                        "type": "string",
+                        "enum": [
+                            "programada",
+                            "completada",
+                            "cancelada"
+                        ]
+                    },
+                    "novedad": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "Consultorio": {
+                "title": "Consultorio",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "nombre": {
+                        "type": "string"
+                    },
+                    "ubicacion": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "piso": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "Doctor": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "nombre": {
+                        "type": "string"
+                    },
+                    "apellido": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "telefono": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "genero": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "estado": {
+                        "type": "string",
+                        "enum": [
+                            "activo",
+                            "inactivo"
+                        ]
+                    },
+                    "especialidad_id": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Consultorios",
+            "description": "Consultorios"
+        },
+        {
+            "name": "Citas Médicas",
+            "description": "Citas médicas"
+        },
+        {
+            "name": "Doctores",
+            "description": "Doctores"
+        }
+    ]
+}
+
+
+================================================
+FILE: tests/TestCase.php
+================================================
+<?php
+
+namespace Tests;
+
+use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+
+abstract class TestCase extends BaseTestCase
+{
+    //
+}
+
+
+
+================================================
+FILE: tests/Feature/ExampleTest.php
+================================================
+<?php
+
+namespace Tests\Feature;
+
+// use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
+
+class ExampleTest extends TestCase
+{
+    /**
+     * A basic test example.
+     */
+    public function test_the_application_returns_a_successful_response(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertStatus(200);
+    }
+}
+
+
+
+================================================
+FILE: tests/Unit/ExampleTest.php
+================================================
+<?php
+
+namespace Tests\Unit;
+
+use PHPUnit\Framework\TestCase;
+
+class ExampleTest extends TestCase
+{
+    /**
+     * A basic test example.
+     */
+    public function test_that_true_is_true(): void
+    {
+        $this->assertTrue(true);
+    }
+}
+
+

@@ -21,6 +21,8 @@ use OpenApi\Annotations as OA;
  *     @OA\Property(property="estado", type="string", enum={"activo","inactivo"}),
  *     @OA\Property(property="especialidad_id", type="integer")
  * )
+ *
+ * @OA\SecurityRequirement({"bearerAuth":{}})
  */
 
 class DoctoresController extends Controller

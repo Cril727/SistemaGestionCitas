@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\consultorios;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+
 /**
  * @OA\Schema(
  *     schema="Consultorio",
@@ -15,12 +16,12 @@ use Illuminate\Http\Request;
  *     @OA\Property(property="ubicacion", type="string", nullable=true),
  *     @OA\Property(property="piso", type="integer")
  * )
+ *
+ * @OA\SecurityRequirement({"bearerAuth":{}})
  */
-
-
 class ConsultoriosController extends Controller
 {
-    /**
+       /**
      * @OA\Get(
      *     path="/api/consultorios",
      *     summary="Lista todos los consultorios",
@@ -38,7 +39,7 @@ class ConsultoriosController extends Controller
         return response()->json($consultorios);
     }
 
-    /**
+        /**
      * @OA\Post(
      *     path="/api/consultorios",
      *     summary="Crear un nuevo consultorio",
@@ -71,7 +72,7 @@ class ConsultoriosController extends Controller
         return response()->json($consultorio, 201);
     }
 
-    /**
+     /**
      * @OA\Get(
      *     path="/api/consultorios/{id}",
      *     summary="Muestra un consultorio específico",
@@ -146,7 +147,7 @@ class ConsultoriosController extends Controller
         return response()->json($consultorio);
     }
 
-    /**
+        /**
      * @OA\Delete(
      *     path="/api/consultorios/{id}",
      *     summary="Eliminar un consultorio",
