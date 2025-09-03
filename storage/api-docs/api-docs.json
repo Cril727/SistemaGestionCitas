@@ -1,0 +1,764 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API de Gestión de Citas Médicas",
+        "description": "Documentación de la API",
+        "contact": {
+            "email": "contacto@ejemplo.com"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000",
+            "description": "Servidor local"
+        }
+    ],
+    "paths": {
+        "/api/listarCitasMedicas": {
+            "get": {
+                "tags": [
+                    "Citas Médicas"
+                ],
+                "summary": "Listar todas las citas médicas",
+                "operationId": "9636f8f8a652b0b1e7213b4720e479fe",
+                "responses": {
+                    "200": {
+                        "description": "Lista de citas médicas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/CitaMedica"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/AgregarCitaMedica": {
+            "post": {
+                "tags": [
+                    "Citas Médicas"
+                ],
+                "summary": "Crear una nueva cita médica",
+                "operationId": "1fb2229555a424400f8561222b97a244",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CitaMedica"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Cita médica creada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CitaMedica"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Errores de validación"
+                    }
+                }
+            }
+        },
+        "/api/citaMedica/{id}": {
+            "get": {
+                "tags": [
+                    "Citas Médicas"
+                ],
+                "summary": "Obtener una cita médica por ID",
+                "operationId": "666b8dbc51c0f8e5ad10f8e704e786cc",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Datos de la cita médica",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CitaMedica"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Cita médica no encontrada"
+                    }
+                }
+            }
+        },
+        "/api/ActualizarCitaMedica/{id}": {
+            "put": {
+                "tags": [
+                    "Citas Médicas"
+                ],
+                "summary": "Actualizar una cita médica",
+                "operationId": "814875cd93f71f60d236e57a8e2cc550",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CitaMedica"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Cita médica actualizada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CitaMedica"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Cita médica no encontrada"
+                    },
+                    "422": {
+                        "description": "Errores de validación"
+                    }
+                }
+            }
+        },
+        "/api/EliminarCitaMedica/{id}": {
+            "delete": {
+                "tags": [
+                    "Citas Médicas"
+                ],
+                "summary": "Eliminar una cita médica",
+                "operationId": "85b98c1e03c7bb1440a5596cb88c70ba",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Cita médica eliminada con éxito"
+                    },
+                    "404": {
+                        "description": "Cita médica no encontrada"
+                    }
+                }
+            }
+        },
+        "/api/citasPorPaciente/{pacienteId}": {
+            "get": {
+                "tags": [
+                    "Citas Médicas"
+                ],
+                "summary": "Obtener citas por paciente",
+                "operationId": "39a2f0f810af4dc226b1d85cb8aff72d",
+                "parameters": [
+                    {
+                        "name": "pacienteId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de citas del paciente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/CitaMedica"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No se encontraron citas médicas para este paciente"
+                    }
+                }
+            }
+        },
+        "/api/citasPorDoctor/{doctorId}": {
+            "get": {
+                "tags": [
+                    "Citas Médicas"
+                ],
+                "summary": "Obtener citas por doctor",
+                "operationId": "9b92486ca9f32d9d6bbfa81fb0cbef93",
+                "parameters": [
+                    {
+                        "name": "doctorId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de citas del doctor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/CitaMedica"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No se encontraron citas médicas para este doctor"
+                    }
+                }
+            }
+        },
+        "/api/citasCompletadas": {
+            "get": {
+                "tags": [
+                    "Citas Médicas"
+                ],
+                "summary": "Obtener citas completadas",
+                "operationId": "e67edfdd4d342e410014e6b2f38d7329",
+                "responses": {
+                    "200": {
+                        "description": "Lista de citas completadas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/CitaMedica"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No se encontraron citas médicas completadas"
+                    }
+                }
+            }
+        },
+        "/api/consultorios": {
+            "get": {
+                "tags": [
+                    "Consultorios"
+                ],
+                "summary": "Lista todos los consultorios",
+                "operationId": "4128008a2bda4165021f87ee6a43eff5",
+                "responses": {
+                    "200": {
+                        "description": "Lista de consultorios",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Consultorio"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Consultorios"
+                ],
+                "summary": "Crear un nuevo consultorio",
+                "operationId": "ef5e542fbe3dfbdf6f26bbb18806b1e1",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Consultorio"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Consultorio creado correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Consultorio"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Errores de validación"
+                    }
+                }
+            }
+        },
+        "/api/consultorios/{id}": {
+            "get": {
+                "tags": [
+                    "Consultorios"
+                ],
+                "summary": "Muestra un consultorio específico",
+                "operationId": "10deb26a7d79d6797165b287f4d3e6f9",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del consultorio",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Datos del consultorio",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Consultorio"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Consultorio no encontrado"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Consultorios"
+                ],
+                "summary": "Actualizar un consultorio existente",
+                "operationId": "0bb02eb122cc136699f48610363392c2",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del consultorio",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Consultorio"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Consultorio actualizado correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Consultorio"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Errores de validación"
+                    },
+                    "404": {
+                        "description": "Consultorio no encontrado"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Consultorios"
+                ],
+                "summary": "Eliminar un consultorio",
+                "operationId": "ff9339ecee74f85025c4f1b3f187a9a9",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del consultorio",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Consultorio eliminado con éxito",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Consultorio no encontrado"
+                    }
+                }
+            }
+        },
+        "/api/listarDoctores": {
+            "get": {
+                "tags": [
+                    "Doctores"
+                ],
+                "summary": "Lista todos los doctores",
+                "operationId": "9595527b0913d7b7a5d2b02416827f03",
+                "responses": {
+                    "200": {
+                        "description": "Lista de doctores",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Doctor"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/AgregarDoctor": {
+            "post": {
+                "tags": [
+                    "Doctores"
+                ],
+                "summary": "Crea un nuevo doctor",
+                "operationId": "fa354e6be148ef04efd8b510f40c155b",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Doctor"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Doctor creado"
+                    },
+                    "422": {
+                        "description": "Errores de validación"
+                    }
+                }
+            }
+        },
+        "/api/doctor/{id}": {
+            "get": {
+                "tags": [
+                    "Doctores"
+                ],
+                "summary": "Obtiene un doctor por ID",
+                "operationId": "7ae317a48767d61dfc829cb5fcd0a285",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Doctor encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Doctor"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Doctor no encontrado"
+                    }
+                }
+            }
+        },
+        "/api/ActualizarDoctor/{id}": {
+            "put": {
+                "tags": [
+                    "Doctores"
+                ],
+                "summary": "Actualiza un doctor por ID",
+                "operationId": "3b5a0c4bb6d95806f3ab22e1bf540224",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Doctor"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Doctor actualizado"
+                    },
+                    "404": {
+                        "description": "Doctor no encontrado"
+                    },
+                    "422": {
+                        "description": "Errores de validación"
+                    }
+                }
+            }
+        },
+        "/api/EliminarDoctor/{id}": {
+            "delete": {
+                "tags": [
+                    "Doctores"
+                ],
+                "summary": "Elimina un doctor por ID",
+                "operationId": "bca72af6f277952c3d9babacb1574b68",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Doctor eliminado"
+                    },
+                    "404": {
+                        "description": "Doctor no encontrado"
+                    }
+                }
+            }
+        },
+        "/api/doctoresActivos": {
+            "get": {
+                "tags": [
+                    "Doctores"
+                ],
+                "summary": "Lista todos los doctores activos",
+                "operationId": "9833bad33bc46070e3eb32c1b2687f51",
+                "responses": {
+                    "200": {
+                        "description": "Lista de doctores activos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Doctor"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/doctoresFemeninos": {
+            "get": {
+                "tags": [
+                    "Doctores"
+                ],
+                "summary": "Lista todos los doctores femeninos",
+                "operationId": "70aa29e8a1cc94ca82f0e6ca8f31fc47",
+                "responses": {
+                    "200": {
+                        "description": "Lista de doctores femeninos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Doctor"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "CitaMedica": {
+                "title": "Cita Médica",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "paciente_id": {
+                        "type": "integer"
+                    },
+                    "doctor_id": {
+                        "type": "integer"
+                    },
+                    "fecha_hora": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "estado": {
+                        "type": "string",
+                        "enum": [
+                            "programada",
+                            "completada",
+                            "cancelada"
+                        ]
+                    },
+                    "novedad": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "Consultorio": {
+                "title": "Consultorio",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "nombre": {
+                        "type": "string"
+                    },
+                    "ubicacion": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "piso": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "Doctor": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "nombre": {
+                        "type": "string"
+                    },
+                    "apellido": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "telefono": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "genero": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "estado": {
+                        "type": "string",
+                        "enum": [
+                            "activo",
+                            "inactivo"
+                        ]
+                    },
+                    "especialidad_id": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Consultorios",
+            "description": "Consultorios"
+        },
+        {
+            "name": "Citas Médicas",
+            "description": "Citas médicas"
+        },
+        {
+            "name": "Doctores",
+            "description": "Doctores"
+        }
+    ]
+}

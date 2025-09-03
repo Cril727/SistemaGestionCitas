@@ -6,8 +6,23 @@ use App\Models\citas_medicas;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 
+/**
+ * @OA\Schema(
+ *     schema="CitaMedica",
+ *     type="object",
+ *     title="Cita Médica",
+ *     @OA\Property(property="id", type="integer"),
+ *     @OA\Property(property="paciente_id", type="integer"),
+ *     @OA\Property(property="doctor_id", type="integer"),
+ *     @OA\Property(property="fecha_hora", type="string", format="date-time"),
+ *     @OA\Property(property="estado", type="string", enum={"programada","completada","cancelada"}),
+ *     @OA\Property(property="novedad", type="string", nullable=true)
+ * )
+ */
+
 class CitasMedicasController extends Controller
 {
+
     /**
      * @OA\Get(
      *     path="/api/listarCitasMedicas",
@@ -16,7 +31,10 @@ class CitasMedicasController extends Controller
      *     @OA\Response(
      *         response=200,
      *         description="Lista de citas médicas",
-     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/CitaMedica"))
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/CitaMedica")
+     *         )
      *     )
      * )
      */
@@ -28,21 +46,18 @@ class CitasMedicasController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/citas",
+     *     path="/api/AgregarCitaMedica",
      *     summary="Crear una nueva cita médica",
      *     tags={"Citas Médicas"},
      *     @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(
-     *             required={"paciente_id","doctor_id","fecha_hora","estado"},
-     *             @OA\Property(property="paciente_id", type="integer"),
-     *             @OA\Property(property="doctor_id", type="integer"),
-     *             @OA\Property(property="fecha_hora", type="string", format="date-time"),
-     *             @OA\Property(property="estado", type="string", enum={"programada","completada","cancelada"}),
-     *             @OA\Property(property="novedad", type="string")
-     *         )
+     *         @OA\JsonContent(ref="#/components/schemas/CitaMedica")
      *     ),
-     *     @OA\Response(response=201, description="Cita médica creada exitosamente", @OA\JsonContent(ref="#/components/schemas/CitaMedica")),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Cita médica creada",
+     *         @OA\JsonContent(ref="#/components/schemas/CitaMedica")
+     *     ),
      *     @OA\Response(response=422, description="Errores de validación")
      * )
      */
@@ -66,7 +81,7 @@ class CitasMedicasController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/citas/{id}",
+     *     path="/api/citaMedica/{id}",
      *     summary="Obtener una cita médica por ID",
      *     tags={"Citas Médicas"},
      *     @OA\Parameter(
@@ -75,7 +90,11 @@ class CitasMedicasController extends Controller
      *         required=true,
      *         @OA\Schema(type="integer")
      *     ),
-     *     @OA\Response(response=200, description="Datos de la cita médica", @OA\JsonContent(ref="#/components/schemas/CitaMedica")),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Datos de la cita médica",
+     *         @OA\JsonContent(ref="#/components/schemas/CitaMedica")
+     *     ),
      *     @OA\Response(response=404, description="Cita médica no encontrada")
      * )
      */
@@ -90,7 +109,7 @@ class CitasMedicasController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/api/citas/{id}",
+     *     path="/api/ActualizarCitaMedica/{id}",
      *     summary="Actualizar una cita médica",
      *     tags={"Citas Médicas"},
      *     @OA\Parameter(
@@ -101,15 +120,13 @@ class CitasMedicasController extends Controller
      *     ),
      *     @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(
-     *             @OA\Property(property="paciente_id", type="integer"),
-     *             @OA\Property(property="doctor_id", type="integer"),
-     *             @OA\Property(property="fecha_hora", type="string", format="date-time"),
-     *             @OA\Property(property="estado", type="string", enum={"programada","completada","cancelada"}),
-     *             @OA\Property(property="novedad", type="string")
-     *         )
+     *         @OA\JsonContent(ref="#/components/schemas/CitaMedica")
      *     ),
-     *     @OA\Response(response=200, description="Cita médica actualizada"),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Cita médica actualizada",
+     *         @OA\JsonContent(ref="#/components/schemas/CitaMedica")
+     *     ),
      *     @OA\Response(response=404, description="Cita médica no encontrada"),
      *     @OA\Response(response=422, description="Errores de validación")
      * )
@@ -139,7 +156,7 @@ class CitasMedicasController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/api/citas/{id}",
+     *     path="/api/EliminarCitaMedica/{id}",
      *     summary="Eliminar una cita médica",
      *     tags={"Citas Médicas"},
      *     @OA\Parameter(
@@ -165,7 +182,7 @@ class CitasMedicasController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/citas/paciente/{pacienteId}",
+     *     path="/api/citasPorPaciente/{pacienteId}",
      *     summary="Obtener citas por paciente",
      *     tags={"Citas Médicas"},
      *     @OA\Parameter(
@@ -174,7 +191,11 @@ class CitasMedicasController extends Controller
      *         required=true,
      *         @OA\Schema(type="integer")
      *     ),
-     *     @OA\Response(response=200, description="Lista de citas del paciente", @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/CitaMedica"))),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista de citas del paciente",
+     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/CitaMedica"))
+     *     ),
      *     @OA\Response(response=404, description="No se encontraron citas médicas para este paciente")
      * )
      */
@@ -189,7 +210,7 @@ class CitasMedicasController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/citas/doctor/{doctorId}",
+     *     path="/api/citasPorDoctor/{doctorId}",
      *     summary="Obtener citas por doctor",
      *     tags={"Citas Médicas"},
      *     @OA\Parameter(
@@ -198,7 +219,11 @@ class CitasMedicasController extends Controller
      *         required=true,
      *         @OA\Schema(type="integer")
      *     ),
-     *     @OA\Response(response=200, description="Lista de citas del doctor", @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/CitaMedica"))),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista de citas del doctor",
+     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/CitaMedica"))
+     *     ),
      *     @OA\Response(response=404, description="No se encontraron citas médicas para este doctor")
      * )
      */
@@ -213,10 +238,14 @@ class CitasMedicasController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/citas/completadas",
+     *     path="/api/citasCompletadas",
      *     summary="Obtener citas completadas",
      *     tags={"Citas Médicas"},
-     *     @OA\Response(response=200, description="Lista de citas completadas", @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/CitaMedica"))),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista de citas completadas",
+     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/CitaMedica"))
+     *     ),
      *     @OA\Response(response=404, description="No se encontraron citas médicas completadas")
      * )
      */
