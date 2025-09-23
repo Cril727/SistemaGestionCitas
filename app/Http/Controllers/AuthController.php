@@ -146,4 +146,32 @@ class AuthController extends Controller
 
 
     }
+
+
+    public function me(){
+        $user = JWTAuth::user();
+        return response()->json($user);
+    }
+
+    public function updateProfile(Request $request){
+        $user = JWTAuth::user();
+
+        $validated = Validator::make($request->all(), [
+            'name' => 'required|string',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'rol' => 'required|string'
+        ]);
+
+        if ($validated->fails()) {
+            return response()->json(['errors' => $validated->errors()], 422);
+        }
+
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'rol' => $request->rol
+        ]);
+
+        return response()->json($user);
+    }
 }

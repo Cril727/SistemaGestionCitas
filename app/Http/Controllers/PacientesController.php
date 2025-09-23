@@ -41,6 +41,10 @@ class PacientesController extends Controller
         return response()->json($pacientes);
     }
 
+    public function pacientesMe(){
+        
+    }
+
 
      /**
      * @OA\Post(
@@ -204,5 +208,15 @@ class PacientesController extends Controller
         return response()->json($pacientes);
     }
 
-    
+    public function getByEmail(Request $request)
+    {
+        $email = $request->query('email');
+        $paciente = Pacientes::where('email', $email)->first();
+        if (!$paciente) {
+            return response()->json(['message' => 'Paciente no encontrado'], 404);
+        }
+        return response()->json($paciente);
+    }
+
+
 }

@@ -207,4 +207,66 @@ class DoctoresController extends Controller
         $doctores = Doctores::where('genero', 'F')->get();
         return response()->json($doctores);
     }
+
+    public function getByEmail(Request $request)
+    {
+        $email = $request->query('email');
+        $doctor = Doctores::where('email', $email)->first();
+        if (!$doctor) {
+            return response()->json(['message' => 'Doctor no encontrado'], 404);
+        }
+        return response()->json($doctor);
+    }
+
+    /**
+     * @OA\Put(
+     *     path="/api/doctor/{id}/estado",
+     *     summary="Actualiza el estado de un doctor (solo para el propio doctor)",
+     *     tags={"Doctores"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="estado", type="string", enum={"activo","inactivo"})
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Estado actualizado"),
+     *     @OA\Response(response=403, description="No autorizado"),
+     *     @OA\Response(response=404, description="Doctor no encontrado")
+     * )
+     */
+    public function updateEstado(Request $request, string $id)
+    {
+        $doctor = Doctores::find($id);
+        if (!$doctor) {
+            return response()->json(['message' => 'Doctor no encontrado'], 404);
+        }
+
+        // Verificar que el usuario autenticado sea el doctor que intenta actualizar
+        $user = $request->user();
+        $doctorByEmail = Doctores::where('email', $user->email)->first();
+
+        if (!$doctorByEmail || $doctorByEmail->id != $id) {
+            return response()->json(['message' => 'No autorizado para actualizar este doctor'], 403);
+        }
+
+        $validate = Validator::make($request->all(), [
+            'estado' => 'required|in:activo,inactivo'
+        ]);
+
+        if ($validate->fails()) {
+            return response()->json($validate->errors(), 422);
+        }
+
+        $doctor->update(['estado' => $request->estado]);
+        return response()->json([
+            'message' => 'Estado actualizado correctamente',
+            'doctor' => $doctor
+        ]);
+    }
 }
