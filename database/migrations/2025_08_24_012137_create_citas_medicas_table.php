@@ -20,6 +20,7 @@ return new class extends Migration
             $table->dateTime('fecha_hora');
             $table->enum('estado', ['programada', 'completada', 'cancelada'])->default('programada');
             $table->text('novedad')->nullable();
+            $table->foreignId('consultorio_id')->nullable()->constrained('consultorios')->nullOnDelete();
             $table->timestamps();
         });
     }

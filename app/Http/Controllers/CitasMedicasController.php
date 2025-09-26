@@ -69,7 +69,8 @@ class CitasMedicasController extends Controller
             'doctor_id' => 'required|exists:doctores,id',
             'fecha_hora' => 'required|date',
             'estado' => 'required|in:programada,completada,cancelada',
-            'novedad' => 'nullable|string|max:255'
+            'novedad' => 'nullable|string|max:255',
+            'consultorio_id' => 'required|numeric'
         ]);
 
         if ($validated->fails()) {
@@ -144,7 +145,9 @@ class CitasMedicasController extends Controller
             'doctor_id' => 'sometimes|required|exists:doctores,id',
             'fecha_hora' => 'sometimes|required|date',
             'estado' => 'sometimes|required|in:programada,completada,cancelada',
-            'novedad' => 'nullable|string|max:255'
+            'novedad' => 'nullable|string|max:255',
+            'consultorio_id' => 'required|numeric'
+            
         ]);
 
         if ($validated->fails()) {

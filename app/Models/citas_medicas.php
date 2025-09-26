@@ -13,7 +13,12 @@ class citas_medicas extends Model
         'doctor_id',
         'fecha_hora',
         'estado',
-        'novedad'
+        'novedad',
+        'consultorio_id'
     ];
+
+    public function citas_medica(){
+        return $this->belongsTo(consultorios::class,'consultorio_id');
+    }
 
 }

@@ -174,4 +174,9 @@ class AuthController extends Controller
 
         return response()->json($user);
     }
+
+    public function listarUsuarios(){
+        $users = User::all();
+        return response()->json(['success' => true, 'data' => $users]);
+    }
 }

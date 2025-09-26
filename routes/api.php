@@ -27,6 +27,7 @@ Route::middleware('auth:api')->group(function () {
 
     Route::get('/me',[AuthController::class, 'me']);
     Route::put('/me',[AuthController::class, 'updateProfile']);
+    Route::get('/listarUsuarios', [AuthController::class, 'listarUsuarios'])->middleware('rol:admin');
     //Especialidades Routes
     Route::get("/listarEspecialidades", [EspecialidadesController::class, 'index'])->middleware('rol:admin');
     Route::post("/AgregarEspecialidad", [EspecialidadesController::class, 'store'])->middleware('rol:admin');
